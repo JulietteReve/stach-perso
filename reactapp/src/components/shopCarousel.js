@@ -50,7 +50,7 @@ const ShopCarousel = (props) => {
           key={item.src}
         >
           <div onClick={() => handleClickExperience(item)}>
-            <img style={{width: '100%'}} src={item.src} alt={item.altText} />
+            <img style={{width: '120%', height: '100%'}} src={item.src} alt={item.altText} />
             
           </div>
         </CarouselItem>

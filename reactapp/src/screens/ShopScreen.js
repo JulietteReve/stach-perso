@@ -1,15 +1,21 @@
 import React, {useState} from 'react';
+import '../App.css';
 import {Container,Row, Col, Card, CardText, CardBody, CardLink,
-  CardTitle, CardSubtitle, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
+  CardTitle, CardSubtitle, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem, ListGroupItemHeading, InputGroup, InputGroupText, } from 'reactstrap'
 import {connect} from 'react-redux';
 import Nav from './Nav';
 import Carousel from '../components/shopCarousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faHeart, faEuroSign, faCoffee, faLeaf, faPaw, faGlassMartini, faGamepad, faWheelchair, faStar} from '@fortawesome/free-solid-svg-icons';
+import {faHeart, faEuroSign, faCoffee, faLeaf, faPaw, faGlassMartini, faGamepad, faWheelchair, faStar, faCalendar, faClock} from '@fortawesome/free-solid-svg-icons';
+import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
+//import TimePicker from 'react-time-picker'
+import "react-datepicker/dist/react-datepicker.css";
+import {fr} from 'date-fns/locale';
 
 
 
 function ShopScreen(props) {
+  registerLocale('fr', fr)
   console.log(props.selectedShop.offers)
 
   const [dropdownOpenCoiffeur, setDropdownOpenCoiffeur] = useState(false);
@@ -18,10 +24,13 @@ function ShopScreen(props) {
   const togglePrestation = () => setDropdownOpenPrestation(prevState => !prevState);
   const [dropdownOpenExperience, setDropdownOpenExperience] = useState(false);
   const toggleExperience = () => setDropdownOpenExperience(prevState => !prevState);
+  
 
-  const [coiffeur, setCoiffeur] = useState('Choisir un coiffeur');
-  const [prestation, setPrestation] = useState('Choisir une prestation');
-  const [experience, setExperience] = useState('Choisir un expérience');
+  const [coiffeur, setCoiffeur] = useState('Coiffeur');
+  const [prestation, setPrestation] = useState('Prestation');
+  const [experience, setExperience] = useState('Expérience');
+  const [startDate, setStartDate] = useState(null);
+  const [startHour, setStartHour] = useState(null);
 
   var priceTab = [];
   for (let y = 0; y < 3; y++) {
@@ -80,13 +89,32 @@ function ShopScreen(props) {
       )
     })
 
-
+    var commentsTab = props.selectedShop.comments.map((element, i) => {
+      var starsCommentsTab = [];
+      var flooredStarRating = Math.round(element.rating);
+      for (let j = 0; j < 5; j++) {
+          var color = 'black';
+          if (j < flooredStarRating) {
+            color = 'gold';
+          }
+          starsCommentsTab.push(
+            <FontAwesomeIcon icon={faStar} color={color} style={{marginTop: '5', marginRight: '2'}}/>
+          );
+    }
+      return(
+          <div>
+          <ListGroupItem>{starsCommentsTab}<p>{element.comment}</p></ListGroupItem>
+          
+          </div>
+      )
+    })
   return (
     <div className='globalStyle'>
         <Nav />
-        <div className='shopPage'>
+        
+        <Container className='shopPage'>
           <Col xs='12' md='6' >
-            <div style={{marginTop: 50, marginBottom: 50}}>
+            <div style={{marginTop: 50, marginBottom: 10}}>
             <Carousel />
             </div>
           </Col>
@@ -108,37 +136,78 @@ function ShopScreen(props) {
                 <CardText style={{marginTop: 20}}>{props.selectedShop.shopDescription}</CardText>
               </CardBody>
             </Card>
-            <div style={{display: 'flex', justifyContent: 'center'}}>
+            
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+              <Dropdown isOpen={dropdownOpenCoiffeur} toggle={toggleCoiffeur}>
+                <DropdownToggle caret style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>
+                  {coiffeur}
+                </DropdownToggle>
+                <DropdownMenu>
+                  {coiffeursTab}
+                </DropdownMenu>
+              </Dropdown>
+            
+              <Dropdown isOpen={dropdownOpenPrestation} toggle={togglePrestation}>
+                <DropdownToggle caret style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>
+                  {prestation}
+                </DropdownToggle>
+                <DropdownMenu>
+                  {prestationsTab}
+                </DropdownMenu>
+              </Dropdown>
 
-            <Dropdown isOpen={dropdownOpenCoiffeur} toggle={toggleCoiffeur}>
-              <DropdownToggle caret style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>
-                {coiffeur}
-              </DropdownToggle>
-              <DropdownMenu>
-                {coiffeursTab}
-              </DropdownMenu>
-            </Dropdown>
-
-            <Dropdown isOpen={dropdownOpenPrestation} toggle={togglePrestation}>
-              <DropdownToggle caret style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>
-                {prestation}
-              </DropdownToggle>
-              <DropdownMenu>
-                {prestationsTab}
-              </DropdownMenu>
-            </Dropdown>
-
-            <Dropdown isOpen={dropdownOpenExperience} toggle={toggleExperience}>
-              <DropdownToggle caret style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>
-                {experience}
-              </DropdownToggle>
-              <DropdownMenu>
-                {experiencesTab}
-              </DropdownMenu>
-            </Dropdown>
+              <Dropdown isOpen={dropdownOpenExperience} toggle={toggleExperience}>
+                <DropdownToggle caret style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>
+                  {experience}
+                </DropdownToggle>
+                <DropdownMenu>
+                  {experiencesTab}
+                </DropdownMenu>
+              </Dropdown>
             </div>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', margin: 10}}>
+            <InputGroup >
+                      <InputGroupText style={{backgroundColor: '#FFCD41'}}>
+                        <FontAwesomeIcon icon={faCalendar} color='black' />
+                      </InputGroupText>
+                      <DatePicker 
+                        selected={startDate} 
+                        onChange={date => setStartDate(date)} 
+                        locale='fr' 
+                        dateFormat="d MMMM yyyy"
+                        minDate={new Date()}
+                      />
+                  </InputGroup>
+
+                  <InputGroup>
+                  <InputGroupText style={{backgroundColor: '#FFCD41'}}>
+                    <FontAwesomeIcon icon={faClock} color='black' />
+                  </InputGroupText>
+                  <DatePicker 
+                    selected={startHour} 
+                    onChange={date => setStartHour(date)} 
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={30}
+                    timeCaption="Time"
+                    dateFormat="hh:mm aa"
+                    // locale='fr' 
+                  />
+              </InputGroup>
+              </div>
+            
           </Col>
-        </div>
+
+          <Col xs='12' md='6' >
+            <ListGroup >
+              <div style={{margin: 10, padding: 5, backgroundColor: '#FFCD41'}}>
+            <h3 style={{textAlign: 'center', fontWeight: 'bold'}}>Tous les avis du salon</h3>
+            {commentsTab}
+            </div>
+            </ListGroup>
+          </Col>
+
+        </Container>
        
     </div>
   );
