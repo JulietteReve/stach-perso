@@ -19,9 +19,10 @@ import ShopScreen from './screens/ShopScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 
-import userChoice from './reducers/userChoice.reducer'
+import userChoice from './reducers/userChoice.reducer';
+import selectedShop from './reducers/selectShop.reducer'
 
-const store = createStore(combineReducers( {userChoice}) )
+const store = createStore(combineReducers( {userChoice, selectedShop}) )
 
 function App() {
   return (

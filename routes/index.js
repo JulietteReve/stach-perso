@@ -146,7 +146,7 @@ if (req.body.data.date && req.body.data.hour) {
   }
   
   // dernier filtre pour limiter la distance des shops autour de l'adresse saisie par le user (4 miles)
-  let distanceMax = 4;
+  let distanceMax = 4000;
 
   let filteredDistanceShopsList = [];
 
@@ -161,7 +161,7 @@ if (req.body.data.date && req.body.data.hour) {
           filteredAppointmentsShopsList[i].longitude,
         )
       );
-      console.log('distance', distance)
+      console.log
       if (distance < distanceMax) {
         filteredDistanceShopsList.push(filteredAppointmentsShopsList[i]);
       }

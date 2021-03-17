@@ -23,7 +23,7 @@ function ListScreen(props) {
     iconUrl: "/user.png",
     iconSize: [25, 25]
   });
-  console.log('userChoice', props.userChoice);
+  
 
   useEffect(() => {
     async function getShops() {
@@ -37,6 +37,8 @@ function ListScreen(props) {
     }
     getShops();
   }, []);
+
+  
 
   var shopsTab = shopsData.map((element, i) => {
     var priceTab = [];
@@ -81,36 +83,42 @@ function ListScreen(props) {
       );
     }
 
-
-
     return (
-      <Link to='/shop' style={{textDecoration: 'none', width: '40%', margin: '10px'}}>
-        <Card key={i} >
-          <CardImg top width="100%" src={element.shopImages[0]} alt="Card image cap" />
-          <CardBody>
-            <CardTitle tag="h5" style={{fontWeight: 'bold', color: 'black' }}>{element.shopName}</CardTitle>
-            <CardSubtitle tag="h6" className="mb-2 text-muted">{element.shopAddress}</CardSubtitle>
-            <CardSubtitle tag="h6" className="mb-2 text-muted">{pictoTab}</CardSubtitle>
-            <CardSubtitle tag="h6" className="mb-2 text-muted">{priceTab}</CardSubtitle>
-            <CardSubtitle tag="h6" className="mb-2 text-muted">{starsTab}</CardSubtitle>
-          </CardBody>
-        </Card>
-      </Link>
+      
+        <Link to={`/salon`} style={{textDecoration: 'none', width: '40%', margin: '10px'}} >
+          <Button style={{backgroundColor: 'white', border: '1px solid white' }} onClick={() => props.selectShop(element)}>
+          <Card key={i} style={{border: '1px solid white'}}>
+            <CardImg top width="100%" src={element.shopImages[0]} alt="Card image cap" />
+            <CardBody>
+              <CardTitle tag="h5" style={{fontWeight: 'bold', color: 'black' }}>{element.shopName}</CardTitle>
+              <CardSubtitle tag="h6" className="mb-2 text-muted" style={{margin: 5}}>{element.shopAddress}</CardSubtitle>
+              <CardSubtitle tag="h6" className="mb-2 text-muted" style={{margin: 5}}>{pictoTab}</CardSubtitle>
+              <CardSubtitle tag="h6" className="mb-2 text-muted" style={{margin: 5}}>{priceTab}</CardSubtitle>
+              <CardSubtitle tag="h6" className="mb-2 text-muted" style={{margin: 5}}>{starsTab}</CardSubtitle>
+            </CardBody>
+          </Card>
+          </Button>
+        </Link>
+      
     )
   })
 
   var shopsMarkers = shopsData.map((element, i) => {
     return (
       <Marker key={i} position={[element.latitude, element.longitude]}>
-        <Popup>
-        <Card key={i} style={{width: '150px', height: '200px'}}>
-          <CardImg  src={element.shopImages[0]} alt="Card image cap" />
-          <CardBody>
-            <CardTitle style={{fontWeight: 'bold', color: 'black', textAlign: 'center', fontSize: '15px' }}>{element.shopName}</CardTitle>
-            <CardTitle style={{color: 'black', textAlign: 'center', fontSize: '10px' }}>{element.shopAddress}</CardTitle>
-          </CardBody>
-        </Card>
-        </Popup>
+        <Link to={`/salon`}>
+        <Button style={{backgroundColor: 'white', border: '1px solid white' }} onClick={() => props.selectShop(element)}>
+          <Popup>
+          <Card key={i} style={{width: '150px', height: '200px'}}>
+            <CardImg  src={element.shopImages[0]} alt="Card image cap" />
+            <CardBody>
+              <CardTitle style={{fontWeight: 'bold', color: 'black', textAlign: 'center', fontSize: '15px' }}>{element.shopName}</CardTitle>
+              <CardTitle style={{color: 'black', textAlign: 'center', fontSize: '10px' }}>{element.shopAddress}</CardTitle>
+            </CardBody>
+          </Card>
+          </Popup>
+          </Button>
+        </Link>
       </Marker>
   )})
   
@@ -124,21 +132,18 @@ function ListScreen(props) {
   </Marker>
   }
 
-
-  
-
   return (
       
     <div className='globalStyle'>
         <Nav />
-        <div className='listPage'>
+        <div className='listPage' style={{padding: 20}}>
           
-            <Col xs='12' md='6' style={{display: 'flex', direction: 'row', flexWrap: 'wrap', alignContent: 'space-around'}}>
+            <Col xs='12' md='6' style={{display: 'flex', direction: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
                 {shopsTab}
             </Col>
 
             <Col xs='12' md='6' >
-              <div className='leaflet-container'>
+              <div className='leaflet-container' style={{display: 'flex', margin: 20, borderRadius: 30}}>
                 <MapContainer center={[defaultLat, defaultLon]} zoom={12}>
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -159,11 +164,22 @@ function ListScreen(props) {
   );
 }
 
+function mapDispatchToProps(dispatch){
+  return {
+    selectShop: function(shop){
+      dispatch({
+        type: 'selectShop',
+        shop: shop,
+      })
+    }
+  }
+}
+
 function mapStateToProps(state){
   return {userChoice: state.userChoice}
 }
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps,
 )(ListScreen);
