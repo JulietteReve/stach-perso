@@ -51,8 +51,8 @@ function HomeScreen (props) {
           response.features.map(e => {
             listAdress.push({
               label: e.properties.label,
-              latitude: e.geometry.coordinates[0],
-              longitude: e.geometry.coordinates[1]
+              latitude: e.geometry.coordinates[1],
+              longitude: e.geometry.coordinates[0]
             })
           })
           setAdresses(listAdress)
@@ -79,6 +79,7 @@ var adressesTab = adresses.map((element, i) => {
   });
 
   var selectAdress = (element) => {
+    
     setAdress(element.label);
     setPopoverOpen(false);
     setUserLocation(element);
