@@ -17,7 +17,7 @@ import {fr} from 'date-fns/locale';
 function ShopScreen(props) {
   
   registerLocale('fr', fr)
-  console.log('selectedShop', props.selectedShop)
+  console.log('user', props.user)
 
   const [dropdownOpenCoiffeur, setDropdownOpenCoiffeur] = useState(false);
   const toggleCoiffeur = () => setDropdownOpenCoiffeur(prevState => !prevState);
@@ -32,8 +32,10 @@ function ShopScreen(props) {
   const [experience, setExperience] = useState('Expérience');
   const [startDate, setStartDate] = useState(null);
   const [startHour, setStartHour] = useState(null);
-  const [userValidation, setUserValidation] = useState(false);
+  // const [userValidation, setUserValidation] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [userExists, setUserExists] = useState(false);
+  const [userDoesntExists, setUserDoesntExists] = useState(false);
 
   useEffect(() => {
     setStartHour(props.userChoice.hour);
@@ -119,14 +121,38 @@ function ShopScreen(props) {
       }
         return(
             <div>
-            <ListGroupItem>{starsCommentsTab}<p>{element.comment}</p></ListGroupItem>
-            
+              <ListGroupItem>{starsCommentsTab}<p>{element.comment}</p></ListGroupItem>
             </div>
         )
       })
 
-
+      var validation = () => {
+        console.log('je rentre dans la validation')
+        if (startHour != null && startDate != null && (prestation != 'Prestation' || experience != 'Expérience')) {
+          console.log('tout existe')
+          props.appointmentChoice(coiffeur, startHour, startDate, prestation, experience, props.selectedShop);
+          if (props.user.email) {
+            console.log('jai un email')
+            setUserExists(true);
+          } else {
+            setUserDoesntExists(true);
+          }  
+        } else {
+          setErrorMessage('Veuillez indiquer vos choix');
+        }
+      }
     
+      if (userExists) {
+        return(
+        <Redirect to='/rendezvous' />
+        )
+      }
+
+      if (userDoesntExists) {
+        return(
+          <Redirect to='/connexion' />
+          )
+      }
 
     return (
       <div className='globalStyle'>
@@ -216,17 +242,9 @@ function ShopScreen(props) {
                 </InputGroup>
                 
                 </div>
-                <div style={{display: 'flex', justifyContent: 'center'}}>
-                  {startHour != null && startDate != null && (prestation != 'Prestation' || experience != 'Expérience') ?
-                    <Link to='/connexion'>
-                      <Button onClick={() => props.appointmentChoice(coiffeur, startHour, startDate, prestation, experience)} style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>Prendre rendez-vous</Button>
-                    </Link>
-                  :
-                    <div>
-                      <Button onClick={() => setErrorMessage('Veuillez indiquer vos choix')}style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold'}}>Prendre rendez-vous</Button>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <Button onClick={() => validation() } style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold', width: '50%'}}>Prendre rendez-vous</Button>
                       <p>{errorMessage}</p>
-                    </div>
-                  }
                 </div>
               
             </Col>
@@ -253,17 +271,17 @@ function ShopScreen(props) {
 
 function mapDispatchToProps(dispatch){
   return {
-    appointmentChoice: function(coiffeur, startHour, startDate, prestation, experience){
+    appointmentChoice: function(coiffeur, startHour, startDate, prestation, experience, selectedShop){
       dispatch({
           type: 'addAppointmentChoice',
-          appointmentChoice: {coiffeur: coiffeur, startHour: startHour, startDate: startDate, prestation: prestation, experience: experience},
+          appointmentChoice: {coiffeur: coiffeur, startHour: startHour, startDate: startDate, prestation: prestation, experience: experience, shop: selectedShop},
       })
     }
   }
 }
 
 function mapStateToProps(state){
-  return {selectedShop: state.selectedShop, userChoice: state.userChoice}
+  return {selectedShop: state.selectedShop, userChoice: state.userChoice, user: state.user}
 }
 
 export default connect(

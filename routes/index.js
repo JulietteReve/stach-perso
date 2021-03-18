@@ -329,13 +329,15 @@ if (req.body.data.date && req.body.data.hour) {
   -> reducer stockant toutes les infos du rdv choisis (reducer créé au moment de la validation du rdv sur la page détail coiffeur)  
 */
 router.post('/addappointment/:token', async function (req, res, next) {
-  console.log(req.body.loyaltyPoints);
+  console.log(req.body);
+  console.log(req.params.token)
+  try {
   var newAppointment = new AppointmentModel({
     chosenOffer: req.body.chosenOffer,
     chosenPrice: req.body.chosenPrice,
     chosenEmployee: req.body.chosenEmployee,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
+    startDate: new Date(req.body.startDate),
+    endDate: new Date(req.body.endDate),
     chosenPayment: req.body.chosenPayment,
     appointmentStatus: req.body.appointmentStatus,
     shopId: req.body.shop_id,
@@ -356,7 +358,10 @@ router.post('/addappointment/:token', async function (req, res, next) {
     }
   );
 
-  res.json({ result: true });
+    res.json({ result: true });
+  } catch {
+    res.json({ result: false });
+  }
 });
 
 router.get('/shop/:id', async function (req, res, next) {

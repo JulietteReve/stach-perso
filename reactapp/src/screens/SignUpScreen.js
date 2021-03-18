@@ -37,6 +37,7 @@ function SignInScreen(props) {
         setErrorMessage('Certains champs sont invalides');
       } else if (body.savedUser) {
         props.user(body.savedUser);
+        setUserExists(true);
       }
     }
   }
