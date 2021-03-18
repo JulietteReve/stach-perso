@@ -32,15 +32,11 @@ function Header() {
               <NavLink href="/">Nouvelle recherche</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/connexion">S'inscrire</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/inscription">Se connecter</NavLink>
+              <NavLink href="/connexion">Se connecter</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="/contact">Contactez-nous</NavLink>
             </NavItem>
-            
           </Nav>
         </Collapse>
       </Navbar>

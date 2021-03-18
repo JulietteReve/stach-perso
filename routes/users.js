@@ -13,18 +13,6 @@ router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
-/* route sign-up, création d'un compte client : 
-  firstName
-  lastName
-  phoneNumber
-  mail
-  password
-  favoris : si le reducer des favoris est rempli, les enregistrer en base de données
-  status (remmplir dans la route en user par le dev)
-  token (remplir dans la route par le dev)
-  
-  voir comment mettre en place google et facebook
-*/
 router.post('/signUp', async function (req, res, next) {
   /* création du token et du status en plus des input rempli par le user */
   // Validate the data before we make a user
@@ -64,19 +52,9 @@ router.post('/signUp', async function (req, res, next) {
     res.json({ result: false, error });
   }
 
-  // if (user.token != null) {
-  // Traitement de la réservation
-  //   res.json({ result: true, token: user.token });
-  // } else {
-  //   res.json({ result: false });
-  // }
 });
 
-/* route sign-in 
- mail
- password 
- token (récupéré dans la route par le dev)
-*/
+
 router.post('/signIn', async function (req, res, next) {
   let result = false;
 
