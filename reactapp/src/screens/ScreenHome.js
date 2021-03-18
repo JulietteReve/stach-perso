@@ -37,7 +37,6 @@ function HomeScreen (props) {
   const [userLocation, setUserLocation] = useState(null);
   const [startHour, setStartHour] = useState(null);
   
-  //const [time, setTime] = useState('10:00');
   
   
   useEffect( () => {

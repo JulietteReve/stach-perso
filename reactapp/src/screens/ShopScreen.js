@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import '../App.css';
 import {Container,Row, Col, Card, CardText, CardBody, CardLink,
   CardTitle, CardSubtitle, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem, ListGroupItemHeading, InputGroup, InputGroupText, } from 'reactstrap'
@@ -8,7 +8,7 @@ import Carousel from '../components/shopCarousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faHeart, faEuroSign, faCoffee, faLeaf, faPaw, faGlassMartini, faGamepad, faWheelchair, faStar, faCalendar, faClock} from '@fortawesome/free-solid-svg-icons';
 import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
-//import TimePicker from 'react-time-picker'
+import {Link, Redirect} from 'react-router-dom'
 import "react-datepicker/dist/react-datepicker.css";
 import {fr} from 'date-fns/locale';
 
@@ -31,6 +31,20 @@ function ShopScreen(props) {
   const [experience, setExperience] = useState('Expérience');
   const [startDate, setStartDate] = useState(null);
   const [startHour, setStartHour] = useState(null);
+  const [userValidation, setUserValidation] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    console.log(props.userChoice);
+    setStartHour(props.userChoice.hour);
+    setStartDate(props.userChoice.date)
+    if (props.userChoice.experience != null) {
+        setExperience(props.userChoice.experience);
+    }
+    if (props.userChoice.prestation != null) {
+      setPrestation(props.userChoice.prestation);
+    }
+  }, []);
 
   var priceTab = [];
   for (let y = 0; y < 3; y++) {
@@ -108,6 +122,23 @@ function ShopScreen(props) {
           </div>
       )
     })
+
+  // var validation = () => {
+  //   if (startHour != null && startDate != null) {
+  //     if (prestation != 'Prestation' && experience != 'Expérience') {
+  //       props.appointmentChoice(coiffeur, startHour, startDate, prestation, experience);
+  //       setUserValidation(true);
+  //     }
+  //   }
+  // }
+  
+  // if (startHour != null && startDate != null) {
+  //   if (prestation != 'Prestation' && experience != 'Expérience') {
+  //     console.log('ok pour moi');
+  //     setUserValidation(true);
+  //   }
+  // }
+
   return (
     <div className='globalStyle'>
         <Nav />
@@ -194,7 +225,19 @@ function ShopScreen(props) {
                     // locale='fr' 
                   />
               </InputGroup>
+              
               </div>
+              {startHour != null && startDate != null && (prestation != 'Prestation' || experience != 'Expérience') ?
+              <Link to='/rendezvous'>
+                <Button onClick={() => props.appointmentChoice(coiffeur, startHour, startDate, prestation, experience)}>Prendre rendez-vous</Button>
+              </Link>
+              :
+              <div>
+                <Button onClick={() => setErrorMessage('Veuillez indiquer vos choix')}>Prendre rendez-vous</Button>
+                <p>{errorMessage}</p>
+              </div>
+              }
+              
             
           </Col>
 
@@ -213,12 +256,23 @@ function ShopScreen(props) {
   );
 }
 
+function mapDispatchToProps(dispatch){
+  return {
+    appointmentChoice: function(coiffeur, startHour, startDate, prestation, experience){
+      dispatch({
+          type: 'addAppointmentChoice',
+          appointmentChoice: {coiffeur: coiffeur, startHour: startHour, startDate: startDate, prestation: prestation, experience: experience},
+      })
+    }
+  }
+}
+
 function mapStateToProps(state){
-  return {selectedShop: state.selectedShop}
+  return {selectedShop: state.selectedShop, userChoice: state.userChoice}
 }
 
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(ShopScreen);
 

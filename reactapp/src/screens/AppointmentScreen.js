@@ -1,10 +1,12 @@
 import React from 'react';
-import {Container,Row} from 'reactstrap'
+import {Container,Row} from 'reactstrap';
+import {connect} from 'react-redux';
 
 
 
 
-function AppointmentScreen() {
+function AppointmentScreen(props) {
+  console.log(props.appointmentChoice)
   return (
     <div>
         <p>AppointmentScreen</p>
@@ -12,4 +14,12 @@ function AppointmentScreen() {
   );
 }
 
-export default AppointmentScreen;
+function mapStateToProps(state){
+  return {appointmentChoice: state.appointmentChoice}
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(AppointmentScreen);
+

@@ -20,9 +20,10 @@ import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 
 import userChoice from './reducers/userChoice.reducer';
-import selectedShop from './reducers/selectShop.reducer'
+import selectedShop from './reducers/selectShop.reducer';
+import appointmentChoice from './reducers/appointmentChoice.reducer'
 
-const store = createStore(combineReducers( {userChoice, selectedShop}) )
+const store = createStore(combineReducers( {userChoice, selectedShop, appointmentChoice}) )
 
 function App() {
   return (
