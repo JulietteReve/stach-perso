@@ -74,6 +74,14 @@
   justify-content: center;
 }
 
+.signUpPage {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100vh; 
+  margin-top: 10px;
+  justify-content: center;
+}
+
 
 .titleNavBar {
   font-family: 'Caveat', cursive;

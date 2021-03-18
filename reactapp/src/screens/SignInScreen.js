@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import {Container,Row, Col, Button, Form, FormGroup, Label, FormText, Input, Card} from 'reactstrap';
 import Nav from './Nav';
 import '../App.css';
-import {Link, Redirect} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom';
+import {connect} from 'react-redux';
 
-function SignInScreen() {
+function SignInScreen(props) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [userExists, setUserExists] = useState(false);
@@ -21,7 +22,6 @@ function SignInScreen() {
       }),
     });
     const body = await data.json();
-    console.log('body', body);
     if (body.result === false) {
       if (body.emailNotFound) {
         setErrorMessage(body.emailNotFound)
@@ -32,6 +32,7 @@ function SignInScreen() {
       }
     } else {
       setUserExists(true);
+      props.user(body.user)
     }
   }
 
@@ -51,7 +52,7 @@ function SignInScreen() {
                   <Button style={{color: 'white', fontWeight: 'bold', backgroundColor: '#AB4242'}}>Inscrivez-vous</Button>
                 </div>
               </Link>
-              <h1 style={{fontWeight: 'bold', marginBottom: 10}}>Connectez-vous avec vos identidiants : </h1>
+              <h1 style={{fontWeight: 'bold', marginBottom: 10}}>Connectez-vous avec vos identidiants: </h1>
               <Card style={{height: '45vh'}}>
                 <div style={{width: '90%', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 20, fontWeight: 'bold'}}>
                   <FormGroup style={{width: '80%'}}>
@@ -74,4 +75,18 @@ function SignInScreen() {
   );
 }
 
-export default SignInScreen; 
+function mapDispatchToProps(dispatch){
+  return {
+    user: function(user){
+      dispatch({
+          type: 'user',
+          user: user,
+      })
+    }
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(SignInScreen);

@@ -13,21 +13,21 @@ router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
+// SIGN UP
 router.post('/signUp', async function (req, res, next) {
-  /* création du token et du status en plus des input rempli par le user */
-  // Validate the data before we make a user
+  //validation des données via join (validation.js)
   const { error } = signUpValidation(req.body);
   if (error) {
     return res.json({ result: false, error: error.details[0].message });
   }
 
-  // Checking if the user is already in the DB
+  // on vérifie que le iuse rn'existe pas encore en base de données (via son email)
   const emailIsExist = await UserModel.findOne({ email: req.body.email });
   if (emailIsExist) {
     return res.json({ result: false, emaiExist: "l'email existe déjà" });
   }
 
-  // Hash passwords
+  // Chiffrage du mot de passe
   const cost = 10;
   const hashedPassword = bcrypt.hashSync(req.body.password, cost);
 
@@ -54,19 +54,20 @@ router.post('/signUp', async function (req, res, next) {
 
 });
 
-
+// SIGN IN
 router.post('/signIn', async function (req, res, next) {
   let result = false;
 
-  // Lets validate the data before we make a user
+  // validation des données via join (validation.js)
   const { error } = signInValidation(req.body);
 
   if (error) {
     return res.json({ result: false, error: error.details[0].message });
   }
 
-  // Checking if the email exists
-  const user = await UserModel.findOne({ email: req.body.email });
+  // validation de l'existance du user, populate avec ses appointment 
+  const user = await UserModel.findOne({ email: req.body.email }).populate('appointments').exec();;
+
   if (!user) {
     return res.json({
       result: false,
@@ -74,7 +75,7 @@ router.post('/signIn', async function (req, res, next) {
     });
   }
 
-  // Password is correct
+  // validation du mot de passe 
   const validPass = await bcrypt.compareSync(req.body.password, user.password);
 
   if (!validPass) {
@@ -89,50 +90,50 @@ router.post('/signIn', async function (req, res, next) {
 });
 
 // Get shops by id TEST
-router.get('/shopsById/:id', async (req, res) => {
-  try {
-    const shops = await ShopModel.findById(req.params.id);
-    res.json({ result: true, shops });
-  } catch (error) {
-    console.log(error);
-    res.json({ result: false, error });
-  }
-});
+// router.get('/shopsById/:id', async (req, res) => {
+//   try {
+//     const shops = await ShopModel.findById(req.params.id);
+//     res.json({ result: true, shops });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ result: false, error });
+//   }
+// });
 
 // Delete Appointments IN SHOP MODEL TEST
-router.delete('/delete-appoint/:idShop/:idAppoint', async (req, res) => {
-  const idShop = req.params.idShop;
-  const shop = await ShopModel.findOne({ _id: idShop });
-  const appoints = shop.appointments;
+// router.delete('/delete-appoint/:idShop/:idAppoint', async (req, res) => {
+//   const idShop = req.params.idShop;
+//   const shop = await ShopModel.findOne({ _id: idShop });
+//   const appoints = shop.appointments;
 
-  const removedAppoint = await appoints.remove({
-    _id: req.params.idAppoint,
-  });
-  await shop.save();
+//   const removedAppoint = await appoints.remove({
+//     _id: req.params.idAppoint,
+//   });
+//   await shop.save();
 
-  res.json({ removedAppoint });
-});
+//   res.json({ removedAppoint });
+// });
 
 // Delete Appointments IN USER MODEL TEST
-router.delete('/delete-user-appoint/:idUser/:idAppoint', async (req, res) => {
-  const idUser = req.params.idUser;
-  const user = await UserModel.findOne({ _id: idUser });
-  const appoints = user.appointments;
+// router.delete('/delete-user-appoint/:idUser/:idAppoint', async (req, res) => {
+//   const idUser = req.params.idUser;
+//   const user = await UserModel.findOne({ _id: idUser });
+//   const appoints = user.appointments;
 
-  const removedAppoint = await appoints.remove({
-    _id: req.params.idAppoint,
-  });
-  await user.save();
+//   const removedAppoint = await appoints.remove({
+//     _id: req.params.idAppoint,
+//   });
+//   await user.save();
 
-  res.json({ removedAppoint });
-});
+//   res.json({ removedAppoint });
+// });
 
 /* route stripe */
 
 /* route à l'entrée de la page 'communiquer avec mon coiffeur' accessible juste après la validation ET depuis la page rdv à venir, pensez à ajouter un bouton ignorer */
-router.get('/myDetails', function (req, res, next) {
+// router.get('/myDetails', function (req, res, next) {
   // récupère via le token gender, hairType, hairLength, image
-});
+// });
 
 /* route au bouton validation de la page 'communiquer avec mon coiffeur, envoie les infos au coiffeur. il y a un bouton ignore qui n'envoie rien. la validation renvoie vers la page profil*/
 router.put('/myDetails', async function (req, res, next) {

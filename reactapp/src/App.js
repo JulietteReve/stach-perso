@@ -21,9 +21,10 @@ import SignUpScreen from './screens/SignUpScreen';
 
 import userChoice from './reducers/userChoice.reducer';
 import selectedShop from './reducers/selectShop.reducer';
-import appointmentChoice from './reducers/appointmentChoice.reducer'
+import appointmentChoice from './reducers/appointmentChoice.reducer';
+import user from './reducers/user.reducer'
 
-const store = createStore(combineReducers( {userChoice, selectedShop, appointmentChoice}) )
+const store = createStore(combineReducers( {userChoice, selectedShop, appointmentChoice, user}))
 
 function App() {
   return (
