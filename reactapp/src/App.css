@@ -82,6 +82,11 @@
   justify-content: center;
 }
 
+.profilPage {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 
 .titleNavBar {
   font-family: 'Caveat', cursive;

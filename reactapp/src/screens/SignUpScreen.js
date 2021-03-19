@@ -32,8 +32,10 @@ function SignInScreen(props) {
       });
       
       const body = await data.json();
-      
-      if (body.error) {
+     console.log(body)
+      if (body.emaiExist) {
+        setErrorMessage(body.emaiExist);
+      } else if (body.error) {
         setErrorMessage('Certains champs sont invalides');
       } else if (body.savedUser) {
         props.user(body.savedUser);
