@@ -36,7 +36,6 @@ function HomeScreen (props) {
   const [startDate, setStartDate] = useState(null);
   const [experience, setExperience] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
-  const [startHour, setStartHour] = useState(null);
   const [dateExists, setDateExists] = useState(false);
   
   
@@ -102,7 +101,7 @@ var adressesTab = adresses.map((element, i) => {
     toggleModal();
     setExperience(experience);
     setPrestation(null);
-    props.userChoice(userLocation, prestation, startDate, experience, startHour)
+    props.userChoice(userLocation, prestation, startDate, experience)
   }
 
   if (prestation === 'TOUTES LES PRESTATIONS') {
@@ -111,7 +110,7 @@ var adressesTab = adresses.map((element, i) => {
 
   var validation = () => {
     if (startDate != null) {
-      props.userChoice(userLocation, prestation, startDate, experience, startHour);
+      props.userChoice(userLocation, prestation, startDate, experience);
       setDateExists(true);
     } else {
       setErrorMessage('Veuillez saisir une date')
@@ -167,48 +166,11 @@ var adressesTab = adresses.map((element, i) => {
                         locale='fr' 
                         dateFormat="d MMMM yyyy"
                         minDate={new Date()}
+                        placeholderText='Choisir une date'
                       />
                   </InputGroup>
-
-                    <FormGroup row>
-                      <Col sm={{ size: 10 }}>
-                        <FormGroup check>
-                          <Input type="checkbox" id="checkbox2" onChange={() => setStartDate(null)} />
-                          <Label check for="checkbox2" >Toutes les dates</Label>
-                        </FormGroup>
-                      </Col>
-                    </FormGroup>
                 
                   </div>
-
-                  <div>
-              
-              <InputGroup>
-                  <InputGroupText>
-                    <FontAwesomeIcon icon={faClock} />
-                  </InputGroupText>
-                  <DatePicker 
-                    selected={startHour} 
-                    onChange={date => setStartHour(date)} 
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={30}
-                    timeCaption="Time"
-                    dateFormat="hh:mm aa"
-                    // locale='fr' 
-                  />
-              </InputGroup>
-
-                <FormGroup row>
-                  <Col sm={{ size: 10 }}>
-                    <FormGroup check>
-                      <Input type="checkbox" id="checkbox2" onChange={() => setStartHour(null)} />
-                      <Label check for="checkbox2" >Toutes les heures</Label>
-                    </FormGroup>
-                  </Col>
-                </FormGroup>
-            
-              </div>
 
                     <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                       <DropdownToggle caret style={{backgroundColor: 'white', color: 'black', width: '100%'}}>
@@ -255,10 +217,10 @@ var adressesTab = adresses.map((element, i) => {
 
 function mapDispatchToProps(dispatch){
   return {
-    userChoice: function(userLocation, prestation, startDate, experience, startHour){
+    userChoice: function(userLocation, prestation, startDate, experience){
       dispatch({
           type: 'addUserChoice',
-          userChoice: {userLocation: userLocation, prestation: prestation, experience: experience, date: startDate, hour: startHour},
+          userChoice: {userLocation: userLocation, prestation: prestation, experience: experience, date: startDate},
       })
     }
   }

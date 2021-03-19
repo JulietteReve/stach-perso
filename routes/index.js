@@ -16,13 +16,13 @@ router.get('/', function (req, res, next) {
 
 router.post('/search', async function (req, res, next) {
   
-
+  
   // par defaut, tous les éléments du filtre sont initialisé à {$exists: true} afin que si le champ n'est pas rempli, nous allions chercher tous les shops 
   let latitude = null;
   let longitude = null;
   let weekday = { $exists: true };
-  let MaxMinutes = 1439;
-  let MinMinutes = 0;
+  // let MaxMinutes = 1439;
+  // let MinMinutes = 0;
   //let completeDate = null;
   let quoi = { $exists: true };
   let package = { $exists: true };
@@ -55,11 +55,12 @@ router.post('/search', async function (req, res, next) {
   
 
   // Nous convertissons l'heure choisi par le user en minutes. MaxMinutes pour filtrer sur l'heure d'ouverture et MinMinutes pour filtrer sur l'heure de fermeture
-  if (req.body.data.hour) {
-    let hourSelected = moment(new Date(req.body.data.hour)).locale('fr').format('LT');
-    MaxMinutes = (+hourSelected.split(':')[0]) * 60 + (+hourSelected.split(':')[1]);
-    MinMinutes = MaxMinutes - 60;
-  }
+
+  // if (req.body.data.hour) {
+  //   let hourSelected = moment(new Date(req.body.data.hour)).locale('fr').format('LT');
+  //   MaxMinutes = (+hourSelected.split(':')[0]) * 60 + (+hourSelected.split(':')[1]);
+  //   MinMinutes = MaxMinutes - 60;
+  // }
 
 
 
@@ -82,8 +83,8 @@ router.post('/search', async function (req, res, next) {
     schedule: {
       $elemMatch: {
         dayOfTheWeek: weekday,
-        openingHours: { $lte: MaxMinutes },
-        closingHours: { $gte: MinMinutes },
+        // openingHours: { $lte: MaxMinutes },
+        // closingHours: { $gte: MinMinutes },
       },
     },
   })
@@ -93,36 +94,36 @@ router.post('/search', async function (req, res, next) {
 
   
 //Reconstitution de l'UTC si date et heure choisi par le user
-let completeDate = null;
-if (req.body.data.date && req.body.data.hour) {
-  let d = req.body.data.date;
-  let h = req.body.data.hour;
-  completeDate = d.replace('T'+d[11]+d[12]+':'+d[14]+d[15], 'T'+h[11]+h[12]+':'+h[14]+h[15]);
-  completeDate = new Date(completeDate)
-}
+// let completeDate = null;
+// if (req.body.data.date && req.body.data.hour) {
+//   let d = req.body.data.date;
+//   let h = req.body.data.hour;
+//   completeDate = d.replace('T'+d[11]+d[12]+':'+d[14]+d[15], 'T'+h[11]+h[12]+':'+h[14]+h[15]);
+//   completeDate = new Date(completeDate)
+// }
 
 // A partir de l'UTC reçu, nous filtrons les shops ayant des disponibilités à la date et l'horaire indiqué par le user. 
-  let filteredAppointmentsShopsList = [];
-  for (let i = 0; i < shopsList.length; i++) {
-    if (completeDate != null) {
-      let numberOfEmployees = null;
-      let counterOfAppointments = null;
-      numberOfEmployees = shopsList[i].shopEmployees.length;
-      for (let j = 0; j < shopsList[i].appointments.length; j++) {
-        if (
-          completeDate > shopsList[i].appointments[j].startDate &&
-          completeDate < shopsList[i].appointments[j].endDate
-        ) {
-          counterOfAppointments = counterOfAppointments + 1;
-        }
-      }
-      if (counterOfAppointments < numberOfEmployees) {
-        filteredAppointmentsShopsList.push(shopsList[i]);
-      }
-    } else {
-      filteredAppointmentsShopsList.push(shopsList[i]);
-    }
-  }
+  // let filteredAppointmentsShopsList = [];
+  // for (let i = 0; i < shopsList.length; i++) {
+  //   if (completeDate != null) {
+  //     let numberOfEmployees = null;
+  //     let counterOfAppointments = null;
+  //     numberOfEmployees = shopsList[i].shopEmployees.length;
+  //     for (let j = 0; j < shopsList[i].appointments.length; j++) {
+  //       if (
+  //         completeDate > shopsList[i].appointments[j].startDate &&
+  //         completeDate < shopsList[i].appointments[j].endDate
+  //       ) {
+  //         counterOfAppointments = counterOfAppointments + 1;
+  //       }
+  //     }
+  //     if (counterOfAppointments < numberOfEmployees) {
+  //       filteredAppointmentsShopsList.push(shopsList[i]);
+  //     }
+  //   } else {
+  //     filteredAppointmentsShopsList.push(shopsList[i]);
+  //   }
+  // }
 
 
 
@@ -146,27 +147,27 @@ if (req.body.data.date && req.body.data.hour) {
   }
   
   // dernier filtre pour limiter la distance des shops autour de l'adresse saisie par le user (4 miles)
-  let distanceMax = 4000;
+  let distanceMax = 4;
 
   let filteredDistanceShopsList = [];
 
-  for (let i = 0; i < filteredAppointmentsShopsList.length; i++) {
+  for (let i = 0; i < shopsList.length; i++) {
     
     if (longitude && latitude) {
       let distance = Math.floor(
         getDistanceFromLatLonInKm(
           latitude,
           longitude,
-          filteredAppointmentsShopsList[i].latitude,
-          filteredAppointmentsShopsList[i].longitude,
+          shopsList[i].latitude,
+          shopsList[i].longitude,
         )
       );
       console.log
       if (distance < distanceMax) {
-        filteredDistanceShopsList.push(filteredAppointmentsShopsList[i]);
+        filteredDistanceShopsList .push(shopsList[i]);
       }
     } else {
-      filteredDistanceShopsList.push(filteredAppointmentsShopsList[i]);
+      filteredDistanceShopsList .push(shopsList[i]);
     }
   }
   res.json({ filteredDistanceShopsList });

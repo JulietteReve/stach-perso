@@ -29,17 +29,17 @@ function ShopScreen(props) {
   const [coiffeur, setCoiffeur] = useState('Coiffeur');
   const [prestation, setPrestation] = useState('Prestation');
   const [experience, setExperience] = useState('Expérience');
-  const [startDate, setStartDate] = useState(props.userChoice.date);
+  //const [startDate, setStartDate] = useState(null);
   const [startHour, setStartHour] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [userExists, setUserExists] = useState(false);
   const [userDoesntExists, setUserDoesntExists] = useState(false);
 
- console.log('startDate', startDate);
+ 
 
   useEffect(() => {
-    setStartHour(props.userChoice.hour);
-    setStartDate(props.userChoice.date);
+    //setStartHour(props.userChoice.hour);
+    //setStartDate(props.userChoice.date);
     if (props.userChoice.experience != null) {
         setExperience(props.userChoice.experience);
     }
@@ -131,11 +131,10 @@ function ShopScreen(props) {
 
       var validation = () => {
         
-        if (startHour != null && startDate != null && (prestation != 'Prestation' || experience != 'Expérience')) {
+        if (startHour != null && (prestation != 'Prestation' || experience != 'Expérience')) {
           
-          props.appointmentChoice(coiffeur, startHour, startDate, prestation, experience, props.selectedShop);
+          props.appointmentChoice(coiffeur, startHour, props.userChoice.date, prestation, experience, props.selectedShop);
           if (props.user.email) {
-            
             setUserExists(true);
           } else {
             setUserDoesntExists(true);
@@ -194,8 +193,21 @@ function ShopScreen(props) {
     ][new Date(props.userChoice.date).getDay()];
 
   let appointmentHoursTab = [];
-   var filtre = props.selectedShop.schedule.filter(item => item.dayOfTheWeek === weekday);
+  var filtre = props.selectedShop.schedule.filter(item => item.dayOfTheWeek === weekday);
 
+  var appointmentDay = new Date(props.userChoice.date).getDate() +' '+ new Date(props.userChoice.date).getMonth() +' '+ new Date(props.userChoice.date).getYear();
+  var existingAppointments = []
+
+   for (let i= 0; i<props.selectedShop.appointments.length; i++) {
+     var appointment = new Date(props.selectedShop.appointments[i].startDate).getDate() +' '+ new Date(props.selectedShop.appointments[i].startDate).getMonth() +' '+ new Date(props.selectedShop.appointments[i].startDate).getYear();
+    if (appointment === appointmentDay) {
+      var time = new Date(props.selectedShop.appointments[i].startDate).getHours();
+      var minute = new Date(props.selectedShop.appointments[i].startDate).getMinutes();
+      existingAppointments.push({hour: time, minutes: minute})
+    }
+  }
+  
+  
    for (let i=filtre[0].openingHours; i<filtre[0].closingHours; i+=30) {
      let time = Math.floor(i/60)
      if (time<10) {
@@ -205,7 +217,20 @@ function ShopScreen(props) {
      if (minute<10) {
        minute = '0'+minute;
      }
-     appointmentHoursTab.push(<Button style={{margin: 5, backgroundColor: '#FFCD41', color: 'black'}} onClick={() => setStartHour(i)}>{time}h{minute}</Button>)
+
+
+    let count = 0;
+      for (let j=0; j<existingAppointments.length; j++) {
+        if (existingAppointments[j].hour === time && existingAppointments[j].minutes === minute) {
+          count++
+        }
+      }
+    
+    if (count >= props.selectedShop.shopEmployees.length) {
+      appointmentHoursTab.push(<Button style={{margin: 5, backgroundColor: 'grey', color: 'black'}} >{time}h{minute}</Button>)
+    } else {
+      appointmentHoursTab.push(<Button style={{margin: 5, backgroundColor: '#FFCD41', color: 'black'}} onClick={() => setStartHour(i)}>{time}h{minute}</Button>)
+    }
    }
 
     return (
@@ -305,10 +330,10 @@ function ShopScreen(props) {
 
 function mapDispatchToProps(dispatch){
   return {
-    appointmentChoice: function(coiffeur, startHour, startDate, prestation, experience, selectedShop){
+    appointmentChoice: function(coiffeur, startHour, date, prestation, experience, selectedShop){
       dispatch({
           type: 'addAppointmentChoice',
-          appointmentChoice: {coiffeur: coiffeur, startHour: startHour, startDate: startDate, prestation: prestation, experience: experience, shop: selectedShop},
+          appointmentChoice: {coiffeur: coiffeur, startHour: startHour, startDate: date, prestation: prestation, experience: experience, shop: selectedShop},
       })
     }
   }

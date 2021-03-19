@@ -7,6 +7,7 @@ import { Link, Redirect } from 'react-router-dom';
 
 function AppointmentScreen(props) {
 
+
   const [paiement, setPaiement] = useState('onshop');
 
  if (props.appointmentChoice.coiffeur) {
@@ -34,18 +35,47 @@ function AppointmentScreen(props) {
       'Novembre',
       'Décembre'
     ][new Date(props.appointmentChoice.startDate).getMonth()];  
+
  
-    var hour = new Date(props.appointmentChoice.startHour).getHours();
-    if (hour < 10) {
-      hour = '0'+hour
+    let time = Math.floor(props.appointmentChoice.startHour/60)
+    if (time<10) {
+      time='0'+time
+    }
+    let minute = props.appointmentChoice.startHour % 60
+    if (minute<10) {
+      minute = '0'+minute;
     }
 
-    var minute = new Date(props.appointmentChoice.startHour).getMinutes();
-    if (minute < 10) {
-      minute = '0'+minute
-    }
+   var completeDate = new Date(props.appointmentChoice.startDate);
+   completeDate.setHours(time);
+   completeDate.setMinutes(minute);
    
 
+   var duration;
+   if (props.appointmentChoice.experience != "Choisir un expérience") {
+     var filtre = props.appointmentChoice.shop.packages.filter(item => item.type === props.appointmentChoice.experience);
+     duration = filtre[0].duration
+   } else {
+     var filtre = props.appointmentChoice.shop.offers.filter(item => item.type === props.appointmentChoice.prestation);
+     duration = filtre[0].duration
+   }
+   
+
+   let endTime = Math.floor((props.appointmentChoice.startHour + duration) /60);
+   if (endTime<10) {
+    endTime='0'+endTime
+  }
+   let endMinute = (props.appointmentChoice.startHour+duration) % 60
+   if (endMinute<10) {
+    endMinute = '0'+endMinute;
+  }
+  
+   var endDate = new Date(props.appointmentChoice.startDate);
+   endDate.setHours(endTime);
+   endDate.setMinutes(endMinute);
+   
+
+   
     var price;
     if (props.appointmentChoice.experience != "Choisir un expérience") {
       var filtre = props.appointmentChoice.shop.packages.filter(item => item.type === props.appointmentChoice.experience);
@@ -55,17 +85,10 @@ function AppointmentScreen(props) {
       price = filtre[0].price
     }
 
-    var duration;
-    if (props.appointmentChoice.experience != "Choisir un expérience") {
-      var filtre = props.appointmentChoice.shop.packages.filter(item => item.type === props.appointmentChoice.experience);
-      duration = filtre[0].duration
-    } else {
-      var filtre = props.appointmentChoice.shop.offers.filter(item => item.type === props.appointmentChoice.prestation);
-      duration = filtre[0].duration
-    }
+
 
     var loyaltyPoints = 0;
-    console.log(props.appointmentChoice.experience)
+    
     if (props.appointmentChoice.experience === "Choisir un expérience") {
       loyaltyPoints = 50
     } else {
@@ -74,7 +97,7 @@ function AppointmentScreen(props) {
 
 
     var validation = async (appointment, price, duration, loyaltyPoints) => {
-      console.log('loyaltypoints', loyaltyPoints)
+      
       let chosenOffer;
       if (appointment.prestation === "Choisir une prestation") {
         chosenOffer = appointment.experience
@@ -88,8 +111,8 @@ function AppointmentScreen(props) {
           chosenOffer: chosenOffer,
           chosenPrice: price,
           chosenEmployee: appointment.coiffeur,
-          startDate: new Date(appointment.startDate),
-          endDate: new Date(appointment.startDate + duration),
+          startDate: completeDate,
+          endDate: endDate,
           chosenPayment: paiement,
           appointmentStatus: 'validated',
           shop_id: appointment.shop._id,
@@ -97,7 +120,6 @@ function AppointmentScreen(props) {
         }),
       });
       const body = await data.json();
-      console.log(body);
     }
     
 
@@ -130,7 +152,7 @@ function AppointmentScreen(props) {
             :
             <h5>Prestation: {props.appointmentChoice.prestation} - {price}€</h5>
             }
-             <h5>Date: {weekday} {new Date(props.appointmentChoice.startDate).getDate()} {month} à {hour}h{minute}</h5>
+             <h5>Date: {weekday} {new Date(props.appointmentChoice.startDate).getDate()} {month} à {time}h{minute}</h5>
              <FormGroup check>
           <Label check>
             <Input type="radio" name="radio1" defaultChecked onClick={() => setPaiement('onshop')}/>{' '}
