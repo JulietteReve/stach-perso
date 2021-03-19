@@ -325,12 +325,9 @@ if (req.body.data.date && req.body.data.hour) {
 //   res.json({ result: true });
 // });
 
-/* route de validation de la base de données 
-  -> reducer stockant toutes les infos du rdv choisis (reducer créé au moment de la validation du rdv sur la page détail coiffeur)  
-*/
+// cette route enregistre les rendez-vous en base de données, dans la collection rendez-vous mais aussi comme clefs étrangères dans le user et le shop
 router.post('/addappointment/:token', async function (req, res, next) {
-  console.log(req.body);
-  console.log(req.params.token)
+  
   try {
   var newAppointment = new AppointmentModel({
     chosenOffer: req.body.chosenOffer,

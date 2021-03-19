@@ -14,6 +14,7 @@ import { Icon } from "leaflet";
 
 
 function ListScreen(props) {
+  console.log(props.userChoice)
 
   const [shopsData, setShopsData] = useState([]);
   const [defaultLat, setDefaultLat] = useState(48.8534);
@@ -24,6 +25,7 @@ function ListScreen(props) {
     iconSize: [25, 25]
   });
   
+  
 
   useEffect(() => {
     async function getShops() {
@@ -33,12 +35,14 @@ function ListScreen(props) {
         body: JSON.stringify({ data: props.userChoice }),
       });
       let body = await shopsFetch.json();
-      setShopsData(body.filteredDistanceShopsList);
+      setShopsData(body.filteredDistanceShopsList); 
     }
     getShops();
+   
   }, []);
 
-  
+  if (props.userChoice.date) {
+
 
   var shopsTab = shopsData.map((element, i) => {
     var priceTab = [];
@@ -162,6 +166,11 @@ function ListScreen(props) {
        
     </div>
   );
+  } else {
+    return(
+      <Redirect to='/' />
+    )
+  }
 }
 
 function mapDispatchToProps(dispatch){

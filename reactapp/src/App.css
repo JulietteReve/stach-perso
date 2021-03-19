@@ -62,7 +62,7 @@
   display: flex;
   flex-wrap: wrap;
   height: 90%;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 

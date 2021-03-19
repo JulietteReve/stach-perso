@@ -18,6 +18,7 @@ router.post('/signUp', async function (req, res, next) {
   //validation des données via join (validation.js)
   const { error } = signUpValidation(req.body);
   if (error) {
+    console.log(error.details[0].message);
     return res.json({ result: false, error: error.details[0].message });
   }
 

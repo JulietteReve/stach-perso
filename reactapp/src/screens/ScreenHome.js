@@ -30,12 +30,14 @@ function HomeScreen (props) {
   const [experienceOnModalClick, setExperienceOnModalClick] = useState(null);
   const [adresses, setAdresses] = useState([]);
   const [adressIsSelected, setAdressIsSelected] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const [prestation, setPrestation] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [experience, setExperience] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [startHour, setStartHour] = useState(null);
+  const [dateExists, setDateExists] = useState(false);
   
   
   
@@ -107,6 +109,21 @@ var adressesTab = adresses.map((element, i) => {
     setPrestation(null);
   }
 
+  var validation = () => {
+    if (startDate != null) {
+      props.userChoice(userLocation, prestation, startDate, experience, startHour);
+      setDateExists(true);
+    } else {
+      setErrorMessage('Veuillez saisir une date')
+    } 
+  }
+
+  if (dateExists) {
+    return(
+      <Redirect to='/liste' />
+    )
+  }
+ 
   return (
       
     <div className='globalStyle'>
@@ -206,9 +223,10 @@ var adressesTab = adresses.map((element, i) => {
 
                   <br />
 
-                  <Link to='/liste'>
-                    <Button style={{backgroundColor: '#4280AB', width: '100%', fontWeight: 'bold'}}onClick={() => props.userChoice(userLocation, prestation, startDate, experience, startHour)}>VALIDER</Button>
-                  </Link> 
+                  
+                    <p>{errorMessage}</p>
+                    <Button style={{backgroundColor: '#4280AB', width: '100%', fontWeight: 'bold'}}onClick={() => validation()}>VALIDER</Button>
+                 
 
                   {experienceOnModalClick ? 
                   <Modal isOpen={modal} toggle={toggleModal} fullscreen={fullscreen}>

@@ -17,7 +17,6 @@ import {fr} from 'date-fns/locale';
 function ShopScreen(props) {
   
   registerLocale('fr', fr)
-  console.log('user', props.user)
 
   const [dropdownOpenCoiffeur, setDropdownOpenCoiffeur] = useState(false);
   const toggleCoiffeur = () => setDropdownOpenCoiffeur(prevState => !prevState);
@@ -30,16 +29,17 @@ function ShopScreen(props) {
   const [coiffeur, setCoiffeur] = useState('Coiffeur');
   const [prestation, setPrestation] = useState('Prestation');
   const [experience, setExperience] = useState('Expérience');
-  const [startDate, setStartDate] = useState(null);
+  const [startDate, setStartDate] = useState(props.userChoice.date);
   const [startHour, setStartHour] = useState(null);
-  // const [userValidation, setUserValidation] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [userExists, setUserExists] = useState(false);
   const [userDoesntExists, setUserDoesntExists] = useState(false);
 
+ console.log('startDate', startDate);
+
   useEffect(() => {
     setStartHour(props.userChoice.hour);
-    setStartDate(props.userChoice.date)
+    setStartDate(props.userChoice.date);
     if (props.userChoice.experience != null) {
         setExperience(props.userChoice.experience);
     }
@@ -47,6 +47,7 @@ function ShopScreen(props) {
       setPrestation(props.userChoice.prestation);
     }
   }, []);
+
 
   if (props.selectedShop.shopName) {
 
@@ -119,6 +120,8 @@ function ShopScreen(props) {
               <FontAwesomeIcon icon={faStar} color={color} style={{marginTop: '5', marginRight: '2'}}/>
             );
       }
+
+
         return(
             <div>
               <ListGroupItem>{starsCommentsTab}<p>{element.comment}</p></ListGroupItem>
@@ -127,12 +130,12 @@ function ShopScreen(props) {
       })
 
       var validation = () => {
-        console.log('je rentre dans la validation')
+        
         if (startHour != null && startDate != null && (prestation != 'Prestation' || experience != 'Expérience')) {
-          console.log('tout existe')
+          
           props.appointmentChoice(coiffeur, startHour, startDate, prestation, experience, props.selectedShop);
           if (props.user.email) {
-            console.log('jai un email')
+            
             setUserExists(true);
           } else {
             setUserDoesntExists(true);
@@ -153,17 +156,64 @@ function ShopScreen(props) {
           <Redirect to='/connexion' />
           )
       }
+    
+    var jour = [
+      'Lundi',
+      'Mardi',
+      'Mercredi',
+      'Jeudi',
+      'Vendredi',
+      'Samedi',
+      'Dimanche',
+    ][new Date(props.userChoice.date).getDay()]; 
+    var month = [
+      'Janvier',
+      'Février',
+      'Mars',
+      'Avril',
+      'Mai',
+      'Juin',
+      'Juillet',
+      'Aout',
+      'Septembre',
+      'Octobre',
+      'Novembre',
+      'Décembre'
+    ][new Date(props.userChoice.date).getMonth()]; 
+
+    var daySelected = jour + ' ' +new Date(props.userChoice.date).getDate()+' '+month
+
+    var weekday = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ][new Date(props.userChoice.date).getDay()];
+
+  let appointmentHoursTab = [];
+   var filtre = props.selectedShop.schedule.filter(item => item.dayOfTheWeek === weekday);
+
+   for (let i=filtre[0].openingHours; i<filtre[0].closingHours; i+=30) {
+     let time = Math.floor(i/60)
+     if (time<10) {
+       time='0'+time
+     }
+     let minute = i % 60
+     if (minute<10) {
+       minute = '0'+minute;
+     }
+     appointmentHoursTab.push(<Button style={{margin: 5, backgroundColor: '#FFCD41', color: 'black'}} onClick={() => setStartHour(i)}>{time}h{minute}</Button>)
+   }
 
     return (
       <div className='globalStyle'>
           <Nav />
           
           <Container className='shopPage'>
-            <Col xs='12' lg='6' >
-              <div style={{marginTop: 50, marginBottom: 10}}>
-              <Carousel />
-              </div>
-            </Col>
+            
 
             <Col xs='12' lg='6' >
               <Card style={{marginTop: 50, marginBottom: 10}}>
@@ -183,7 +233,17 @@ function ShopScreen(props) {
                 </CardBody>
               </Card>
               
-              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+              
+            </Col>
+
+            <Col xs='12' lg='6' >
+              <div style={{marginTop: 50, marginBottom: 10}}>
+              <Carousel />
+              </div>
+            </Col>
+
+            <Col xs='12' lg='6'>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                 <Dropdown isOpen={dropdownOpenCoiffeur} toggle={toggleCoiffeur}>
                   <DropdownToggle caret style={{margin: 5, backgroundColor:"#AB4242", color: 'white', fontWeight: 'bold'}}>
                     {coiffeur}
@@ -211,45 +271,19 @@ function ShopScreen(props) {
                   </DropdownMenu>
                 </Dropdown>
               </div>
-              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', margin: 10}}>
-              <InputGroup >
-                        <InputGroupText style={{backgroundColor: '#FFCD41'}}>
-                          <FontAwesomeIcon icon={faCalendar} color='black' />
-                        </InputGroupText>
-                        <DatePicker 
-                          selected={startDate} 
-                          onChange={date => setStartDate(date)} 
-                          locale='fr' 
-                          dateFormat="d MMMM yyyy"
-                          minDate={new Date()}
-                        />
-                    </InputGroup>
-
-                    <InputGroup>
-                    <InputGroupText style={{backgroundColor: '#FFCD41'}}>
-                      <FontAwesomeIcon icon={faClock} color='black' />
-                    </InputGroupText>
-                    <DatePicker 
-                      selected={startHour} 
-                      onChange={date => setStartHour(date)} 
-                      showTimeSelect
-                      showTimeSelectOnly
-                      timeIntervals={30}
-                      timeCaption="Time"
-                      dateFormat="hh:mm aa"
-                      // locale='fr' 
-                    />
-                </InputGroup>
-                
-                </div>
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                      <Button onClick={() => validation() } style={{margin: 5, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold', width: '50%'}}>Prendre rendez-vous</Button>
-                      <p>{errorMessage}</p>
-                </div>
               
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <h5 style={{fontWeight: 'bold', margin: 20}}>Date selectionnée : {daySelected} </h5>
+                <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
+                  {appointmentHoursTab}
+                </div>
+
+                <Button onClick={() => validation() } style={{margin: 20, backgroundColor:"#4280AB", color: 'white', fontWeight: 'bold', width: '50%'}}>Prendre rendez-vous</Button>
+                <p>{errorMessage}</p>
+              </div>
             </Col>
 
-            <Col xs='12' lg='12' >
+            <Col xs='12' lg='6' >
               <ListGroup >
                 <div style={{margin: 10, padding: 5, backgroundColor: '#FFCD41'}}>
               <h3 style={{textAlign: 'center', fontWeight: 'bold'}}>Tous les avis du salon</h3>
