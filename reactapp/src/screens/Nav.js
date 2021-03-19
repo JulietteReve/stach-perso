@@ -37,6 +37,9 @@ function Header() {
             <NavItem>
               <NavLink href="/contact">Contactez-nous</NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink href="/profil">TEMPORAIRE</NavLink>
+            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>

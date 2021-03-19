@@ -5,11 +5,10 @@ import Nav from './Nav';
 import '../App.css';
 
 
-
-
-
 function ProfileScreen(props) {
-  console.log('user', props.user)
+
+  console.log('user', props.user);
+
   return (
     <div className='globalStyle'>
       <Nav />
@@ -50,7 +49,7 @@ function ProfileScreen(props) {
   );
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
   return {user: state.user}
 }
 

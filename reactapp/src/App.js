@@ -18,6 +18,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import ShopScreen from './screens/ShopScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import Nav from './screens/Nav';
 
 import userChoice from './reducers/userChoice.reducer';
 import selectedShop from './reducers/selectShop.reducer';
@@ -30,7 +31,9 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
+        <Nav></Nav>
         <Switch>
+          
           <Route component={HomeScreen} path="/" exact />
           <Route component={AppointmentScreen} path="/rendezvous" exact />
           <Route component={ContactScreen} path="/contact" exact />
