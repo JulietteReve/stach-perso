@@ -15,12 +15,16 @@ import {
     DropdownItem,
     NavbarText, 
   } from 'reactstrap';
+import {connect} from 'react-redux';
 
-function Header() {
+function Header(props) {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
 
-  return (
+    console.log(props.user.email)
+
+  if (props.user.email) {
+    return (
     
       <div className='navBar'>
       <Navbar light expand="md" >
@@ -32,13 +36,10 @@ function Header() {
               <Link to='/'><NavLink>Nouvelle recherche</NavLink></Link>
             </NavItem>
             <NavItem>
-              <Link to='/connexion'><NavLink>Se connecter</NavLink></Link>
+              <Link to='/profil'><NavLink>Mes rendez-vous</NavLink></Link>
             </NavItem>
             <NavItem>
-              <Link to='/contact'><NavLink>Contactez-nous</NavLink></Link>
-            </NavItem>
-            <NavItem>
-              <Link to='/profil'><NavLink>TEMPORAIRE</NavLink></Link>
+              <Link to='/deconnexion'><NavLink>Se déconnecter</NavLink></Link>
             </NavItem>
           </Nav>
         </Collapse>
@@ -46,6 +47,37 @@ function Header() {
     </div>
     
   );
+  } else {
+    return(
+    <div className='navBar'>
+      <Navbar light expand="md" >
+        <NavbarBrand href="/" className='titleNavBar' ><h2>'Stach</h2></NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          <Nav  navbar className='navBarText'>
+            <NavItem>
+              <Link to='/'><NavLink>Nouvelle recherche</NavLink></Link>
+            </NavItem>
+            <NavItem>
+              <Link to='/connexion'><NavLink>Se connecter</NavLink></Link>
+            </NavItem>
+
+          </Nav>
+        </Collapse>
+      </Navbar>
+    </div>
+    );
+  }
+
+  
 }
 
-export default Header;
+function mapStateToProps(state){
+  return {user: state.user}
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(Header);
+

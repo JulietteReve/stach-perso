@@ -15,6 +15,8 @@ import {fr} from 'date-fns/locale';
 
 
 function ShopScreen(props) {
+
+  console.log()
   
   registerLocale('fr', fr)
 
