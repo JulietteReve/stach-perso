@@ -13,7 +13,7 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    NavbarText
+    NavbarText, 
   } from 'reactstrap';
 
 function Header() {
@@ -29,16 +29,16 @@ function Header() {
         <Collapse isOpen={isOpen} navbar>
           <Nav  navbar className='navBarText'>
             <NavItem>
-              <NavLink href="/">Nouvelle recherche</NavLink>
+              <Link to='/'><NavLink>Nouvelle recherche</NavLink></Link>
             </NavItem>
             <NavItem>
-              <NavLink href="/connexion">Se connecter</NavLink>
+              <Link to='/connexion'><NavLink>Se connecter</NavLink></Link>
             </NavItem>
             <NavItem>
-              <NavLink href="/contact">Contactez-nous</NavLink>
+              <Link to='/contact'><NavLink>Contactez-nous</NavLink></Link>
             </NavItem>
             <NavItem>
-              <NavLink href="/profil">TEMPORAIRE</NavLink>
+              <Link to='/profil'><NavLink>TEMPORAIRE</NavLink></Link>
             </NavItem>
           </Nav>
         </Collapse>

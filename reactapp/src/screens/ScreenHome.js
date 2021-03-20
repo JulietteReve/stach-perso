@@ -15,7 +15,6 @@ import Carousel from '../components/carousel';
 
 
 function HomeScreen (props) {
-  console.log('userfrom homscreen', props.user)
   registerLocale('fr', fr)
   const prestations = ['TOUTES LES PRESTATIONS', 'COUPE HOMME','COUPE FEMME','COUPE HOMME + BARBE','COUPE HOMME COLORATION','COUPE FEMME COLORATION','COUPE FEMME AFRO', 'COUPE HOMME AFRO', 'COUPE FEMME BALAYAGE', 'COUPE FEMME PERMANENTE']
 
@@ -127,7 +126,7 @@ var adressesTab = adresses.map((element, i) => {
   return (
       
     <div className='globalStyle'>
-        
+        <Nav />
         <Container className='homePage'>
 
           <Col xs='12' style={{display: 'flex', flexDirection: 'column' ,alignItems: 'center'}}>
@@ -227,12 +226,9 @@ function mapDispatchToProps(dispatch){
   }
 }
 
-function mapStateToProps(state) {
-  return {user: state.user}
-}
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(HomeScreen);
 

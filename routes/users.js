@@ -90,99 +90,45 @@ router.post('/signIn', async function (req, res, next) {
   }
 });
 
-// Get shops by id TEST
-// router.get('/shopsById/:id', async (req, res) => {
-//   try {
-//     const shops = await ShopModel.findById(req.params.id);
-//     res.json({ result: true, shops });
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ result: false, error });
-//   }
+
+
+// router.put('/myDetails', async function (req, res, next) {
+//   await UserModel.updateOne(
+//     {token : req.body.token},
+//     {gender: req.body.gender, hairType: req.body.hairType, hairLength: req.body.hairLength}
+//   );
+
+//   res.json({ result: true });
 // });
 
-// Delete Appointments IN SHOP MODEL TEST
-// router.delete('/delete-appoint/:idShop/:idAppoint', async (req, res) => {
-//   const idShop = req.params.idShop;
-//   const shop = await ShopModel.findOne({ _id: idShop });
-//   const appoints = shop.appointments;
 
-//   const removedAppoint = await appoints.remove({
-//     _id: req.params.idAppoint,
-//   });
-//   await shop.save();
+router.post('/myProfile/:token', async function (req, res, next) {
 
-//   res.json({ removedAppoint });
-// });
-
-// Delete Appointments IN USER MODEL TEST
-// router.delete('/delete-user-appoint/:idUser/:idAppoint', async (req, res) => {
-//   const idUser = req.params.idUser;
-//   const user = await UserModel.findOne({ _id: idUser });
-//   const appoints = user.appointments;
-
-//   const removedAppoint = await appoints.remove({
-//     _id: req.params.idAppoint,
-//   });
-//   await user.save();
-
-//   res.json({ removedAppoint });
-// });
-
-/* route stripe */
-
-/* route à l'entrée de la page 'communiquer avec mon coiffeur' accessible juste après la validation ET depuis la page rdv à venir, pensez à ajouter un bouton ignorer */
-// router.get('/myDetails', function (req, res, next) {
-  // récupère via le token gender, hairType, hairLength, image
-// });
-
-/* route au bouton validation de la page 'communiquer avec mon coiffeur, envoie les infos au coiffeur. il y a un bouton ignore qui n'envoie rien. la validation renvoie vers la page profil*/
-router.put('/myDetails', async function (req, res, next) {
-  await UserModel.updateOne(
-    {token : req.body.token},
-    {gender: req.body.gender, hairType: req.body.hairType, hairLength: req.body.hairLength}
-  );
-
-  res.json({ result: true });
-});
-
-/* route profil: depuis la validation de la com avec coiffeur et depuis le drawer si connecté*/
-router.get('/myProfile/:token', async function (req, res, next) {
-  // récupère firstname, lastname, loyaltyPoints, rdv futurs, rdv passés
-  // rdv futurs : il y a un bouton qui amène vers myDetails
-  // rdv passés : il y a un bouton qui amène vers comment
-
-
-  //A priori le populate ne sert plus après changement de méthode
-  const tokenUser = req.params.token;
-  const user = await UserModel.findOne({ token: tokenUser })
-    .populate('appointments')
-    .exec();
-
+  // création tableau des Id des appointments du user
   const appointIds = [];
-  user.appointments.forEach((userAppoint) => {
-    appointIds.push(userAppoint._id);
-  });
+  for (let i=0; i<req.body.data.length; i++) {
+    appointIds.push(req.body.data[i]._id)
+  }
 
   try {
-    // Get all appointments by user
+    
     const appointments = await AppointmentModel.find({
       _id: { $in: appointIds },
     });
 
-    // Get all shopsId by user
+    // création du tableau des shops associés aux appointments précédents
     const shopsIds = [];
     appointments.forEach((appointment) => {
       shopsIds.push(appointment.shopId);  
     });
-//? For EACH ne fonctionne pas avec un await, il faudrait lui rajouter un setTimeout mais du coup on préfère passer avec une boucle for classique
+
     const shops = [];
     for (let i = 0; i < shopsIds.length; i++) {
       const shop = await ShopModel.findById(shopsIds[i]);
       shops.push(shop);
     }
 
-    res.json({ result: true, appointments, user, shopsIds, shops });
+    res.json({ result: true, appointments, shops });
   } catch (error) {
     res.json({ result: false, error });
   }

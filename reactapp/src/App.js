@@ -31,7 +31,6 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <Nav></Nav>
         <Switch>
           
           <Route component={HomeScreen} path="/" exact />
