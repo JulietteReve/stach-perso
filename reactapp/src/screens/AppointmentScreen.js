@@ -7,7 +7,7 @@ import { Link, Redirect } from 'react-router-dom';
 
 function AppointmentScreen(props) {
 
-
+console.log(props.appointmentChoice)
   const [paiement, setPaiement] = useState('onshop');
 
  if (props.appointmentChoice.coiffeur) {
@@ -52,11 +52,13 @@ function AppointmentScreen(props) {
    
 
    var duration;
-   if (props.appointmentChoice.experience != "Choisir un expérience") {
+   if (props.appointmentChoice.experience != "Expérience") {
      var filtre = props.appointmentChoice.shop.packages.filter(item => item.type === props.appointmentChoice.experience);
+     console.log('duration experience', filtre)
      duration = filtre[0].duration
    } else {
      var filtre = props.appointmentChoice.shop.offers.filter(item => item.type === props.appointmentChoice.prestation);
+     console.log('duration offer', filtre)
      duration = filtre[0].duration
    }
    
@@ -77,7 +79,7 @@ function AppointmentScreen(props) {
 
    
     var price;
-    if (props.appointmentChoice.experience != "Choisir un expérience") {
+    if (props.appointmentChoice.experience != "Expérience") {
       var filtre = props.appointmentChoice.shop.packages.filter(item => item.type === props.appointmentChoice.experience);
       price = filtre[0].price
     } else {
@@ -89,17 +91,17 @@ function AppointmentScreen(props) {
 
     var loyaltyPoints = 0;
     
-    if (props.appointmentChoice.experience === "Choisir un expérience") {
+    if (props.appointmentChoice.experience === "Expérience") {
       loyaltyPoints = 50
     } else {
       loyaltyPoints = 100
     }
 
 
-    var validation = async (appointment, price, duration, loyaltyPoints) => {
+    var validation = async (appointment, price, loyaltyPoints) => {
       
       let chosenOffer;
-      if (appointment.prestation === "Choisir une prestation") {
+      if (appointment.prestation === "Prestation") {
         chosenOffer = appointment.experience
       } else {
         chosenOffer = appointment.prestation
@@ -147,8 +149,8 @@ function AppointmentScreen(props) {
             :
             <h5>Professionnel: pas de préférence</h5>
             }
-            {props.appointmentChoice.experience != "Choisir un expérience" ?
-            <h5>Prestation: {props.appointmentChoice.experience} {price}€</h5>
+            {props.appointmentChoice.experience != "Expérience" ?
+            <h5>Prestation: {props.appointmentChoice.experience} - {price}€</h5>
             :
             <h5>Prestation: {props.appointmentChoice.prestation} - {price}€</h5>
             }
@@ -167,7 +169,7 @@ function AppointmentScreen(props) {
         </FormGroup>
           </div>
           <Link to='/profil' style={{display: 'flex', justifyContent: 'center'}}>
-            <Button style={{width: '50%', backgroundColor: '#4280AB', fontWeight: 'bold'}} onClick={() => validation(props.appointmentChoice, price, duration, loyaltyPoints)}>Valider</Button>
+            <Button style={{width: '50%', backgroundColor: '#4280AB', fontWeight: 'bold'}} onClick={() => validation(props.appointmentChoice, price, loyaltyPoints)}>Valider</Button>
           </Link>
 
         </Card>

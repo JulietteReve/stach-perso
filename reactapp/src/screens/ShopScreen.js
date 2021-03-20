@@ -35,13 +35,13 @@ function ShopScreen(props) {
   const [userExists, setUserExists] = useState(false);
   const [userDoesntExists, setUserDoesntExists] = useState(false);
 
- 
+ console.log(props.userChoice)
 
   useEffect(() => {
-    //setStartHour(props.userChoice.hour);
-    //setStartDate(props.userChoice.date);
+    
+   
     if (props.userChoice.experience != null) {
-        setExperience(props.userChoice.experience);
+        setExperience(props.userChoice.experience.altText);
     }
     if (props.userChoice.prestation != null) {
       setPrestation(props.userChoice.prestation);
@@ -98,13 +98,13 @@ function ShopScreen(props) {
 
       var prestationsTab = props.selectedShop.offers.map((element, i) => {
         return(
-          <DropdownItem onClick={() => {setPrestation(element.type); setExperience('Choisir un expérience')}}>{`${element.type} ${element.price}€`}</DropdownItem>
+          <DropdownItem onClick={() => {setPrestation(element.type); setExperience('Expérience')}}>{`${element.type} ${element.price}€`}</DropdownItem>
         )
       })
 
       var experiencesTab = props.selectedShop.packages.map((element, i) => {
         return(
-          <DropdownItem onClick={() => {setExperience(element.type); setPrestation('Choisir une prestation')}}>{`${element.type} ${element.price}€`}</DropdownItem>
+          <DropdownItem onClick={() => {setExperience(element.type); setPrestation('Prestation')}}>{`${element.type} ${element.price}€`}</DropdownItem>
         )
       })
 
