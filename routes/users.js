@@ -147,6 +147,8 @@ router.get('/myProfile/:token', async function (req, res, next) {
 
 /* route en post depuis le profil : un bouton sur chaque rdv passés, ouvre un overlay avec un input pour le commentaire, un input pour la note */
 router.put('/addcomment', async function (req, res, next) {
+  console.log(req.body);
+
   var shop = await ShopModel.findById(req.body.shop_id);
 
   var newComment = new CommentModel({
@@ -156,6 +158,9 @@ router.put('/addcomment', async function (req, res, next) {
   });
 
   var saveComment = await newComment.save();
+  
+  console.log('shop', shop)
+  console.log('comment', saveComment)
 
   await UserModel.updateOne(
     { token: req.body.token },

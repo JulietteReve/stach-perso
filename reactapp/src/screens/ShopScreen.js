@@ -35,7 +35,7 @@ function ShopScreen(props) {
   const [userExists, setUserExists] = useState(false);
   const [userDoesntExists, setUserDoesntExists] = useState(false);
 
- console.log(props.userChoice)
+ 
 
   useEffect(() => {
     

@@ -1,37 +1,98 @@
 import React, {useEffect, useState} from 'react';
-import {Container,Row, Col, Card, Button, Badge} from 'reactstrap';
+import {Container,Row, Col, Card, Button, Badge, Input, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 import {connect} from 'react-redux';
 import Nav from './Nav';
 import '../App.css';
 import { Redirect } from 'react-router';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faStar} from '@fortawesome/free-solid-svg-icons';
 
 
 function ProfileScreen(props) {
 
+  const {
+    buttonLabel,
+    className
+  } = props;
+
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [shopId, setShopId] = useState('');
+  const [appointmentId, setAppointmentId] = useState('');
+
   const [appointments, setAppointments] = useState([]);
   const [shops, setShops] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+ 
 
   useEffect(() => {
     const getUser = async () => {
       const data = await fetch(`/users/myProfile/${props.user.token}`
-      // , {
-        // method: 'POST',
-        // headers: { 'Content-Type': 'application/json' },
-        // body: JSON.stringify({ data: props.user.appointments }),
-      // }
       );
       const body = await data.json();
-      console.log('body', body)
       setShops(body.shops);
       setAppointments(body.appointments);
       
     };
     getUser();
-  }, [props.user.token]);
+  }, [shopId]);
  
  
 
   if (props.user.token) {
+
+    var starsTab = [];
+    for (let i=0; i<5; i++) {
+      var color = 'black';
+      if (i<rating) {
+        color = 'gold'
+      }
+      let count = i+1
+      starsTab.push(<FontAwesomeIcon key={i} style={{marginRight: 5}} icon={faStar} color={color} onClick={() => setRating(count)} />)
+    };
+
+    
+    
+    var openComment = (shopId, appointmentId) => {
+      setShopId(shopId);
+      setAppointmentId(appointmentId)
+      toggle()
+    }
+
+    var closeComment = () => {
+      setShopId('');
+      setAppointmentId('');
+      setRating(0);
+      setComment('');
+      toggle();
+      setErrorMessage(null);
+    } 
+
+    var sendComment = async () => {
+      if (rating === 0) {
+        setErrorMessage('Veuillez noter votre coiffeur')
+      } else if (comment === '') {
+        setErrorMessage('Veuillez laisser un commentaire')
+      } else {
+        console.log(rating, comment, shopId, appointmentId);
+        var newComment = await fetch(`/users/addcomment`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `comment=${comment}&rating=${rating}&shop_id=${shopId}&token=${props.user.token}&appointmentId=${appointmentId}`,
+        });
+        var rawResponse = await newComment.json();
+        console.log(rawResponse)
+        setShopId('');
+        setAppointmentId('');
+        setRating(0);
+        setComment(null);
+        setErrorMessage(null);
+        toggle();
+      } 
+    }
 
     var futursAppointments = [];
     var pastAppointments = [];
@@ -81,7 +142,7 @@ function ProfileScreen(props) {
       }
   
       var date = weekday +' '+ new Date(element.appointment.startDate).getDate() +' '+ month +' à '+ hours+'h'+ minutes
-
+      
       return(
         <Card style={{width: '90%', padding: 10, marginBottom: 10}}>
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -95,6 +156,14 @@ function ProfileScreen(props) {
           <p>{element.shop.shopAddress}</p>
           <h5 style={{fontWeight: 'bold'}}>{element.appointment.chosenOffer}</h5>
           <h5>{date}</h5>
+          { element.appointment.commentExists ?
+          null
+          :
+          <div>
+          <Button style={{backgroundColor: '#4280AB'}} onClick={() => openComment(element.shop._id, element.appointment._id) }>Ecrire un commentaire</Button>
+          </div>
+          }
+          
         </Card>
       )
     })
@@ -178,6 +247,18 @@ function ProfileScreen(props) {
             </Card>
           </Col>
         </Container>
+        <Modal isOpen={modal} toggle={toggle} className={className}>
+          <ModalHeader toggle={toggle}>Ecrivez votre commentaire</ModalHeader>
+          <ModalBody>
+            {starsTab}
+            <Input placeholder="Votre commentaire" onChange={(e) => setComment(e.target.value)} value={comment}></Input>
+            {errorMessage}
+          </ModalBody>
+          <ModalFooter>
+            <Button style={{backgroundColor: '#4280AB'}} onClick={() => sendComment()}>Envoyer</Button>{' '}
+            <Button color="secondary" onClick={() => closeComment()}>Annuler</Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
 
@@ -187,6 +268,8 @@ function ProfileScreen(props) {
     )
   }
 }
+
+
 
 function mapStateToProps(state) {
   return {user: state.user}
