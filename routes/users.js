@@ -102,13 +102,21 @@ router.post('/signIn', async function (req, res, next) {
 // });
 
 
-router.post('/myProfile/:token', async function (req, res, next) {
+router.get('/myProfile/:token', async function (req, res, next) {
 
   // création tableau des Id des appointments du user
+  const tokenUser = req.params.token;
+  const user = await UserModel.findOne({ token: tokenUser })
+    // .populate('appointments')
+    // .exec();
+
   const appointIds = [];
-  for (let i=0; i<req.body.data.length; i++) {
-    appointIds.push(req.body.data[i]._id)
-  }
+  user.appointments.forEach((userAppoint) => {
+    appointIds.push(userAppoint._id);
+  });
+
+  console.log('user', user);
+
 
   try {
     
@@ -127,6 +135,9 @@ router.post('/myProfile/:token', async function (req, res, next) {
       const shop = await ShopModel.findById(shopsIds[i]);
       shops.push(shop);
     }
+
+    console.log('appointments', appointments.length)
+    console.log('shops', shops.length)
 
     res.json({ result: true, appointments, shops });
   } catch (error) {

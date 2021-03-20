@@ -9,6 +9,7 @@ function AppointmentScreen(props) {
 
 console.log(props.appointmentChoice)
   const [paiement, setPaiement] = useState('onshop');
+  const [validationOk, setValidationOk] = useState(false);
 
  if (props.appointmentChoice.coiffeur) {
 
@@ -121,8 +122,14 @@ console.log(props.appointmentChoice)
           loyaltyPoints: loyaltyPoints,
         }),
       });
-      const body = await data.json();
+      setValidationOk(true)
     }
+
+  if (validationOk) {
+    return(
+      <Redirect to='/profil' />
+    )
+  }
     
 
   return (
@@ -168,9 +175,9 @@ console.log(props.appointmentChoice)
           </Label>
         </FormGroup>
           </div>
-          <Link to='/profil' style={{display: 'flex', justifyContent: 'center'}}>
+          {/* <Link to='/profil' style={{display: 'flex', justifyContent: 'center'}}> */}
             <Button style={{width: '50%', backgroundColor: '#4280AB', fontWeight: 'bold'}} onClick={() => validation(props.appointmentChoice, price, loyaltyPoints)}>Valider</Button>
-          </Link>
+          {/* </Link> */}
 
         </Card>
         

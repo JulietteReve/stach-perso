@@ -13,11 +13,12 @@ function ProfileScreen(props) {
 
   useEffect(() => {
     const getUser = async () => {
-      const data = await fetch(`/users/myProfile/${props.user.token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: props.user.appointments }),
-      }
+      const data = await fetch(`/users/myProfile/${props.user.token}`
+      // , {
+        // method: 'POST',
+        // headers: { 'Content-Type': 'application/json' },
+        // body: JSON.stringify({ data: props.user.appointments }),
+      // }
       );
       const body = await data.json();
       console.log('body', body)
@@ -26,7 +27,7 @@ function ProfileScreen(props) {
       
     };
     getUser();
-  }, []);
+  }, [props.user.token]);
  
  
 
