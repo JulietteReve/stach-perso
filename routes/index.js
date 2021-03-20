@@ -16,14 +16,10 @@ router.get('/', function (req, res, next) {
 
 router.post('/search', async function (req, res, next) {
   
-  
   // par defaut, tous les éléments du filtre sont initialisé à {$exists: true} afin que si le champ n'est pas rempli, nous allions chercher tous les shops 
   let latitude = null;
   let longitude = null;
   let weekday = { $exists: true };
-  // let MaxMinutes = 1439;
-  // let MinMinutes = 0;
-  //let completeDate = null;
   let quoi = { $exists: true };
   let package = { $exists: true };
   let picto = { $exists: true };
@@ -52,17 +48,6 @@ router.post('/search', async function (req, res, next) {
       'Saturday',
     ][new Date(req.body.data.date).getDay()];
   }
-  
-
-  // Nous convertissons l'heure choisi par le user en minutes. MaxMinutes pour filtrer sur l'heure d'ouverture et MinMinutes pour filtrer sur l'heure de fermeture
-
-  // if (req.body.data.hour) {
-  //   let hourSelected = moment(new Date(req.body.data.hour)).locale('fr').format('LT');
-  //   MaxMinutes = (+hourSelected.split(':')[0]) * 60 + (+hourSelected.split(':')[1]);
-  //   MinMinutes = MaxMinutes - 60;
-  // }
-
-
 
 // je récupère la liste des shops filtrés par prestations, experience, note, fourchette de prix, services, et horaires d'ouverture
   var shopsList = await ShopModel.find({
@@ -76,56 +61,18 @@ router.post('/search', async function (req, res, next) {
         type: package,
       },
     },
-    // // atHome: type,
     rating: { $gte: rating },
     priceFork:  priceFork,
     shopFeatures: picto,
     schedule: {
       $elemMatch: {
         dayOfTheWeek: weekday,
-        // openingHours: { $lte: MaxMinutes },
-        // closingHours: { $gte: MinMinutes },
       },
     },
   })
     .populate('appointments')
     .populate('comments')
     .exec();
-
-  
-//Reconstitution de l'UTC si date et heure choisi par le user
-// let completeDate = null;
-// if (req.body.data.date && req.body.data.hour) {
-//   let d = req.body.data.date;
-//   let h = req.body.data.hour;
-//   completeDate = d.replace('T'+d[11]+d[12]+':'+d[14]+d[15], 'T'+h[11]+h[12]+':'+h[14]+h[15]);
-//   completeDate = new Date(completeDate)
-// }
-
-// A partir de l'UTC reçu, nous filtrons les shops ayant des disponibilités à la date et l'horaire indiqué par le user. 
-  // let filteredAppointmentsShopsList = [];
-  // for (let i = 0; i < shopsList.length; i++) {
-  //   if (completeDate != null) {
-  //     let numberOfEmployees = null;
-  //     let counterOfAppointments = null;
-  //     numberOfEmployees = shopsList[i].shopEmployees.length;
-  //     for (let j = 0; j < shopsList[i].appointments.length; j++) {
-  //       if (
-  //         completeDate > shopsList[i].appointments[j].startDate &&
-  //         completeDate < shopsList[i].appointments[j].endDate
-  //       ) {
-  //         counterOfAppointments = counterOfAppointments + 1;
-  //       }
-  //     }
-  //     if (counterOfAppointments < numberOfEmployees) {
-  //       filteredAppointmentsShopsList.push(shopsList[i]);
-  //     }
-  //   } else {
-  //     filteredAppointmentsShopsList.push(shopsList[i]);
-  //   }
-  // }
-
-
 
 // fonction de calcul de la distance entre deux points grace à leur latitude et leur longitude
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -173,159 +120,6 @@ router.post('/search', async function (req, res, next) {
   res.json({ filteredDistanceShopsList });
 });
 
-// route pour enregistrer les shops via postman - NE PAS EFFACER LES CHAMPS COMMENTÉS //
-// router.post('/addShop', async function (req, res, next) {
-//   var newShop = new ShopModel({
-//     shopName: req.body.shopName,
-//     shopImages: [
-//       req.body.shopImage1,
-//       req.body.shopImage2,
-//       req.body.shopImage3,
-//       req.body.shopImage4,
-//     ],
-//     shopAddress: req.body.shopAddress,
-//     shopPhone: req.body.shopPhone,
-//     shopMail: req.body.shopMail,
-//     shopDescription: req.body.shopDescription,
-//     shopFeatures: [
-//       req.body.shopFeatures1,
-//       req.body.shopFeatures2,
-//       req.body.shopFeatures3,
-//       req.body.shopFeatures4,
-//     ],
-//     shopEmployees: [
-//       req.body.shopEmployee1,
-//       req.body.shopEmployee2,
-//       req.body.shopEmployee3
-//     ],
-//     offers: [
-//       {
-//         type: req.body.offerName1,
-//         price: req.body.offerPrice1,
-//         duration: req.body.offerDuration1,
-//       },
-//       {
-//         type: req.body.offerName2,
-//         price: req.body.offerPrice2,
-//         duration: req.body.offerDuration2,
-//       },
-//       {
-//         type: req.body.offerName3,
-//         price: req.body.offerPrice3,
-//         duration: req.body.offerDuration3,
-//       },
-//       {
-//         type: req.body.offerName4,
-//         price: req.body.offerPrice4,
-//         duration: req.body.offerDuration4,
-//       },
-//       {
-//         type: req.body.offerName5,
-//         price: req.body.offerPrice5,
-//         duration: req.body.offerDuration5,
-//       },
-//       {
-//         type: req.body.offerName6, 
-//         price: req.body.offerPrice6, 
-//         duration: req.body.offerDuration6
-//       }
-//     ],
-//     packages: [
-//       {
-//         type: req.body.packageName1,
-//         price: req.body.packagePrice1,
-//         duration: req.body.packageDuration1,
-//         description: req.body.packageDescription1,
-//       },
-//       {
-//         type: req.body.packageName2,
-//         price: req.body.packagePrice2,
-//         duration: req.body.packageDuration2,
-//         description: req.body.packageDescription2,
-//       },
-//       {
-//         type: req.body.packageName3, 
-//         price: req.body.packagePrice3, 
-//         duration: req.body.packageDuration3, 
-//         description: req.body.packageDescription3
-//       }
-//     ],
-//     schedule: [
-//       {
-//         dayOfTheWeek: 'Monday', 
-//         openingHours: req.body.openingHoursMonday, 
-//         closingHours: req.body.closingHoursMonday
-//       },
-//       {
-//         dayOfTheWeek: 'Tuesday',
-//         openingHours: req.body.openingHoursTuesday,
-//         closingHours: req.body.closingHoursTuesday,
-//       },
-//       {
-//         dayOfTheWeek: 'Wednesday',
-//         openingHours: req.body.openingHoursWednesday,
-//         closingHours: req.body.closingHoursWednesday,
-//       },
-//       {
-//         dayOfTheWeek: 'Thursday',
-//         openingHours: req.body.openingHoursThursday,
-//         closingHours: req.body.closingHoursThursday,
-//       },
-//       {
-//         dayOfTheWeek: 'Friday',
-//         openingHours: req.body.openingHoursFriday,
-//         closingHours: req.body.closingHoursFriday,
-//       },
-//       {
-//         dayOfTheWeek: 'Saturday',
-//         openingHours: req.body.openingHoursSaturday,
-//         closingHours: req.body.closingHoursSaturday,
-//       },
-//       {
-//       dayOfTheWeek: 'Sunday', 
-//       openingHours: req.body.openingHoursSunday, 
-//       closingHours: req.body.closingHoursSunday
-//     },
-//     ],
-//     atHome: req.body.atHome,
-//     rating: 0,
-//     latitude: req.body.latitude,
-//     longitude: req.body.longitude,
-//   });
-
-//   await newShop.save();
-
-//   res.json({ result: true });
-// });
-
-// router.put('/addPriceFork', async function (req, res, next) {
-//   var shop = await ShopModel.findOne({ shopName: req.body.shopName });
-
-//   var totalPrice = 0;
-//   var numberOfOffer = 0;
-//   for (let i = 0; i < shop.offers.length; i++) {
-//     totalPrice += shop.offers[i].price;
-//     numberOfOffer++;
-//   }
-//   var averagePrice = totalPrice / numberOfOffer;
-
-//   var priceFork;
-//   if (averagePrice < 50) {
-//     priceFork = 1;
-//   } else if (averagePrice < 70) {
-//     priceFork = 2;
-//   } else {
-//     priceFork = 3;
-//   }
-
-//   await ShopModel.updateOne(
-//     { shopName: req.body.shopName },
-//     { priceFork: priceFork }
-//   );
-
-//   res.json({ result: true });
-// });
-
 // cette route enregistre les rendez-vous en base de données, dans la collection rendez-vous mais aussi comme clefs étrangères dans le user et le shop
 router.post('/addappointment/:token', async function (req, res, next) {
   
@@ -362,55 +156,5 @@ router.post('/addappointment/:token', async function (req, res, next) {
   }
 });
 
-router.get('/shop/:id', async function (req, res, next) {
-  var shop = await ShopModel.findById(req.params.id)
-    .populate('appointments')
-    .populate('comments')
-    .exec();
-  // console.log(shop);
-
-  res.json({ result: true, shop: shop });
-});
-
-
-router.get('/favorites', async function (req, res, next){
-  
-  var favoriteShops = await UserModel.findOne({token: req.query.token})
-// console.log(favoriteShops.favorites)
-var listID = []
-favoriteShops.favorites.forEach((item)=>{
-  listID.push(item)
-})
-
-// console.log(listID)
-// db.collection.find( { _id : { $in : [ObjectId('1'),ObjectId('2')] } } );
- var foundFavorites =  await ShopModel.find({_id: { $in: listID} }).populate('comments').populate('appointments').exec()
-// console.log("FOUND", foundFavorites)
-  res.json({result: true, favoriteShops: foundFavorites})
-})
-
-router.post('/favorites', async function (req, res, next){
-  
-    await UserModel.updateMany(
-    {token : req.body.token},
-    {$push : {favorites: req.body.id}}
-    )
-    
-
-    res.json({result: true})
-
-})
-
-
-router.post('/deleteFavorites', async function (req, res, next){
-  
-  await UserModel.updateMany(
-  {token : req.body.token},
-  {$pull : {favorites: req.body.id}}
-  )
-
-  res.json({result: true})
-
-})
 
 module.exports = router;

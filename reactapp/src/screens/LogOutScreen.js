@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import {Container,Row, Col, Card, Button, CardImg, FormGroup, Label, Input} from 'reactstrap';
+import {Container, Col, Button} from 'reactstrap';
 import {connect} from 'react-redux';
 import '../App.css';
 import Nav from './Nav';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 
 

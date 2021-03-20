@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../App.css';
-import {Container,Row, Col, Card, CardText, CardBody,
+import {Container, Col, Card, CardText, CardBody,
   CardTitle, CardSubtitle, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem, } from 'reactstrap'
 import {connect} from 'react-redux';
 import Nav from './Nav';

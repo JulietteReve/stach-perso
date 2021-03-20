@@ -91,24 +91,11 @@ router.post('/signIn', async function (req, res, next) {
 });
 
 
-
-// router.put('/myDetails', async function (req, res, next) {
-//   await UserModel.updateOne(
-//     {token : req.body.token},
-//     {gender: req.body.gender, hairType: req.body.hairType, hairLength: req.body.hairLength}
-//   );
-
-//   res.json({ result: true });
-// });
-
-
 router.get('/myProfile/:token', async function (req, res, next) {
 
   // création tableau des Id des appointments du user
   const tokenUser = req.params.token;
   const user = await UserModel.findOne({ token: tokenUser })
-    // .populate('appointments')
-    // .exec();
 
   const appointIds = [];
   user.appointments.forEach((userAppoint) => {
@@ -136,18 +123,14 @@ router.get('/myProfile/:token', async function (req, res, next) {
       shops.push(shop);
     }
 
-    console.log('appointments', appointments.length)
-    console.log('shops', shops.length)
-
     res.json({ result: true, appointments, shops });
   } catch (error) {
     res.json({ result: false, error });
   }
 });
 
-/* route en post depuis le profil : un bouton sur chaque rdv passés, ouvre un overlay avec un input pour le commentaire, un input pour la note */
+
 router.put('/addcomment', async function (req, res, next) {
-  console.log(req.body);
 
   var shop = await ShopModel.findById(req.body.shop_id);
 
@@ -158,9 +141,6 @@ router.put('/addcomment', async function (req, res, next) {
   });
 
   var saveComment = await newComment.save();
-  
-  console.log('shop', shop)
-  console.log('comment', saveComment)
 
   await UserModel.updateOne(
     { token: req.body.token },

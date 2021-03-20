@@ -1,8 +1,7 @@
 
 import React, {useEffect} from 'react';
 import '../App.css';
-import {Container, Row, Col, Card, Button, CardImg, CardTitle, CardText, CardGroup,
-  CardSubtitle, CardBody} from 'reactstrap';
+import { Col, Card, Button, CardImg, CardTitle,CardSubtitle, CardBody} from 'reactstrap';
 import Nav from './Nav';
 import {connect} from 'react-redux'
 import { useState } from 'react';
@@ -14,7 +13,6 @@ import { Icon } from "leaflet";
 
 
 function ListScreen(props) {
-  console.log(props.userChoice)
 
   const [shopsData, setShopsData] = useState([]);
   const [defaultLat, setDefaultLat] = useState(48.8534);
