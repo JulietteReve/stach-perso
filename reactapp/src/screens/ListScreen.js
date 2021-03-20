@@ -21,8 +21,8 @@ function ListScreen(props) {
   const [defaultLon, setDefaultLon] = useState(2.3488);
 
   const skater = new Icon({
-    iconUrl: "/user.png",
-    iconSize: [25, 25]
+    iconUrl: "/icon.jpeg",
+    iconSize: [50, 50]
   });
   
   
@@ -131,7 +131,7 @@ function ListScreen(props) {
     userMarker = 
     <Marker position={[props.userChoice.userLocation.latitude, props.userChoice.userLocation.longitude]} icon={skater}>
     <Popup>
-      ma position
+      vous êtes ici
     </Popup>
   </Marker>
   }

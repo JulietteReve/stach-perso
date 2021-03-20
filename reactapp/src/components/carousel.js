@@ -23,13 +23,13 @@ const items = [
       description : "Pas le temps d'aller chez le coiffeur avant votrer soirée, pas besoin de choisir, commencez une before avec vos amis tout en vous faisant coiffer"
     },
     {
-      src: '/picture3.jpg',
+      src: '/picture9.jpeg',
       altText: 'PLAY HARD CUT HARD',
       caption: 'PLAY HARD CUT HARD',
       description : "Jouez à vos jeux préférés et devenez le champion du salon de coiffure"
     },
     {
-        src: '/picture4.jpg',
+        src: '/picture8.jpeg',
         altText: 'BIEN ETRE',
         caption: 'BIEN ETRE',
         description : "Si vous êtes un peu stressé à l'idée d'avoir une nouvelle coupe, alors détendez vous et profitez d'un massage"

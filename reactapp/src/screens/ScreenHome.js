@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import '../App.css';
-import {Container,Row, InputGroup, InputGroupText, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Col, Button, Form, FormGroup, Label, FormText, Modal, ModalHeader, ModalBody, ModalFooter, ListGroup, ListGroupItem, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import {Container, InputGroup, InputGroupText, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, ListGroup, ListGroupItem, Popover} from 'reactstrap';
 import Nav from './Nav';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faSearch, faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
-import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
-//import TimePicker from 'react-time-picker'
+import {faSearch, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import DatePicker, {registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {fr} from 'date-fns/locale';
 import {Link, Redirect} from 'react-router-dom'
@@ -24,7 +23,7 @@ function HomeScreen (props) {
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
   const [popoverOpen, setPopoverOpen] = useState(false);
-  // const togglePopover = () => setPopoverOpen(!popoverOpen);
+  
 
   const [adress, setAdress] = useState('');
   const [experienceOnModalClick, setExperienceOnModalClick] = useState(null);
@@ -136,7 +135,7 @@ var adressesTab = adresses.map((element, i) => {
 
           
           
-          <Col xs="12" md="6" style={{height: '50%', display: 'flex', flexDirection:'column', justifyContent: 'space-around'}}>
+          <Col xs="12" md="6" style={{height: '40%', display: 'flex', flexDirection:'column', justifyContent: 'space-around'}}>
               
                 
                   <InputGroup style={{marginBottom: '10px'}} id="Popover1" onClick={() => setAdressIsSelected(false)}>
@@ -183,9 +182,6 @@ var adressesTab = adresses.map((element, i) => {
                       </DropdownMenu>
                     </Dropdown>
 
-                  <br />
-
-                  
                     <p>{errorMessage}</p>
                     <Button style={{backgroundColor: '#4280AB', width: '100%', fontWeight: 'bold'}}onClick={() => validation()}>VALIDER</Button>
                  

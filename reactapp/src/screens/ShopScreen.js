@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import '../App.css';
-import {Container,Row, Col, Card, CardText, CardBody, CardLink,
-  CardTitle, CardSubtitle, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem, ListGroupItemHeading, InputGroup, InputGroupText, } from 'reactstrap'
+import {Container,Row, Col, Card, CardText, CardBody,
+  CardTitle, CardSubtitle, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem, } from 'reactstrap'
 import {connect} from 'react-redux';
 import Nav from './Nav';
 import Carousel from '../components/shopCarousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faHeart, faEuroSign, faCoffee, faLeaf, faPaw, faGlassMartini, faGamepad, faWheelchair, faStar, faCalendar, faClock} from '@fortawesome/free-solid-svg-icons';
-import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
-import {Link, Redirect} from 'react-router-dom'
+import {faHeart, faEuroSign, faCoffee, faLeaf, faPaw, faGlassMartini, faGamepad, faWheelchair, faStar} from '@fortawesome/free-solid-svg-icons';
+import DatePicker, {registerLocale} from "react-datepicker";
+import { Redirect} from 'react-router-dom'
 import "react-datepicker/dist/react-datepicker.css";
 import {fr} from 'date-fns/locale';
 
@@ -31,7 +31,6 @@ function ShopScreen(props) {
   const [coiffeur, setCoiffeur] = useState('Coiffeur');
   const [prestation, setPrestation] = useState('Prestation');
   const [experience, setExperience] = useState('Expérience');
-  //const [startDate, setStartDate] = useState(null);
   const [startHour, setStartHour] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [userExists, setUserExists] = useState(false);
