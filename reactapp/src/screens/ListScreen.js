@@ -1,4 +1,3 @@
-
 import React, {useEffect} from 'react';
 import '../App.css';
 import { Col, Card, Button, CardImg, CardTitle,CardSubtitle, CardBody} from 'reactstrap';
@@ -15,14 +14,12 @@ import { Icon } from "leaflet";
 function ListScreen(props) {
 
   const [shopsData, setShopsData] = useState([]);
-
+ 
   const skater = new Icon({
     iconUrl: "/icon.jpeg",
     iconSize: [50, 50]
   });
   
-  
-
   useEffect(() => {
     async function getShops() {
       let shopsFetch = await fetch(`/search`, {
@@ -39,8 +36,8 @@ function ListScreen(props) {
 
   if (props.userChoice.date) {
 
-
   var shopsTab = shopsData.map((element, i) => {
+
     var priceTab = [];
     for (let y = 0; y < 3; y++) {
       var color = '#bdc3c7';
@@ -83,10 +80,12 @@ function ListScreen(props) {
       );
     }
 
+
     return (
       
         <Link to={`/salon`} style={{textDecoration: 'none', width: '40%', margin: '10px'}} >
           <Button style={{backgroundColor: 'white', border: '1px solid white' }} onClick={() => props.selectShop(element)}>
+           
           <Card key={i} style={{border: '1px solid white'}}>
             <CardImg top width="100%" src={element.shopImages[0]} alt="Card image cap" />
             <CardBody>
@@ -103,9 +102,10 @@ function ListScreen(props) {
     )
   })
 
+
   var shopsMarkers = shopsData.map((element, i) => {
-    return (
-      <Marker key={i} position={[element.latitude, element.longitude]}>
+    return ( 
+      <Marker key={i} position={[element.latitude, element.longitude]} >
         <Link to={`/salon`}>
         <Button style={{backgroundColor: 'white', border: '1px solid white' }} onClick={() => props.selectShop(element)}>
           <Popup>
@@ -119,7 +119,7 @@ function ListScreen(props) {
           </Popup>
           </Button>
         </Link>
-      </Marker>
+      </Marker>    
   )})
 
   var map;
