@@ -130,7 +130,7 @@ var adressesTab = adresses.map((element, i) => {
 
           <Col xs='12' style={{display: 'flex', flexDirection: 'column' ,alignItems: 'center'}}>
             <h1 style={{fontFamily: 'Caveat', fontSize: '80px', margin: 20}}>'Stach</h1>
-            <h3 style={{textAlign: 'center'}}>Trouver enfin le coiffeur qui VOUS correspond, près de chez vous</h3>
+            <h3 style={{textAlign: 'center'}}>Trouvez enfin le coiffeur qui VOUS correspond, près de chez vous</h3>
           </Col>
 
           

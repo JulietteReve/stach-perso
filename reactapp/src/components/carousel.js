@@ -73,7 +73,9 @@ const MonCarousel = (props) => {
         >
           <div onClick={() => handleClickExperience(item)}>
             <img style={{width: '100%'}} src={item.src} alt={item.altText} />
-            <p style={{textAlign: 'center', color: 'white', backgroundColor: '#4280AB'}}>{item.caption}</p>
+            <div style={{textAlign: 'center', color: 'white', backgroundColor: '#4280AB', fontWeight: 'bold'}}>
+            <p >{item.caption}</p>
+            </div>
           </div>
         </CarouselItem>
       );

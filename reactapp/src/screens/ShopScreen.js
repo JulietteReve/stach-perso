@@ -54,7 +54,7 @@ function ShopScreen(props) {
 
     var priceTab = [];
     for (let y = 0; y < 3; y++) {
-        var color = 'white';
+        var color = '#bdc3c7';
         if (y < props.selectedShop.priceFork) {
           color = 'black';
         }
@@ -240,15 +240,14 @@ function ShopScreen(props) {
           
           <Container className='shopPage'>
             
-
-            <Col xs='12' lg='6' >
+            <Col xs='12' lg='6' style={{display: 'flex'}}>
               <Card style={{marginTop: 50, marginBottom: 10}}>
                 <CardBody>
                   <CardTitle tag="h4" style={{fontWeight: 'bold'}}>{props.selectedShop.shopName}</CardTitle>
                   <CardSubtitle tag="h6" className="mb-2 text-muted">{props.selectedShop.shopAddress}</CardSubtitle>
                   <div style={{display: 'flex', flexDirection: 'column'}}>
 
-                    <FontAwesomeIcon icon={faHeart} color='black' style={{margin: '5'}} />
+                    {/* <FontAwesomeIcon icon={faHeart} color='black' style={{margin: '5'}} /> */}
                     <div style={{display: 'flex'}}>{priceTab}</div>
                     <div style={{display: 'flex'}}>{pictoTab}</div>
                     <div style={{display: 'flex'}}>{starsTab}</div>
@@ -258,7 +257,6 @@ function ShopScreen(props) {
                   <CardText style={{marginTop: 20}}>{props.selectedShop.shopDescription}</CardText>
                 </CardBody>
               </Card>
-              
               
             </Col>
 

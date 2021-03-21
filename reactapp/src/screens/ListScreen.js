@@ -15,8 +15,6 @@ import { Icon } from "leaflet";
 function ListScreen(props) {
 
   const [shopsData, setShopsData] = useState([]);
-  const [defaultLat, setDefaultLat] = useState(48.8534);
-  const [defaultLon, setDefaultLon] = useState(2.3488);
 
   const skater = new Icon({
     iconUrl: "/icon.jpeg",
@@ -45,7 +43,7 @@ function ListScreen(props) {
   var shopsTab = shopsData.map((element, i) => {
     var priceTab = [];
     for (let y = 0; y < 3; y++) {
-      var color = 'white';
+      var color = '#bdc3c7';
       if (y < element.priceFork) {
         color = '#4280AB';
       }
@@ -115,7 +113,7 @@ function ListScreen(props) {
             <CardImg  src={element.shopImages[0]} alt="Card image cap" />
             <CardBody>
               <CardTitle style={{fontWeight: 'bold', color: 'black', textAlign: 'center', fontSize: '15px' }}>{element.shopName}</CardTitle>
-              <CardTitle style={{color: 'black', textAlign: 'center', fontSize: '10px' }}>{element.shopAddress}</CardTitle>
+              <CardTitle style={{color: 'black', textAlign: 'center', fontSize: '10px'}}>{element.shopAddress}</CardTitle>
             </CardBody>
           </Card>
           </Popup>
@@ -123,15 +121,31 @@ function ListScreen(props) {
         </Link>
       </Marker>
   )})
-  
-  let userMarker;
+
+  var map;
   if (props.userChoice.userLocation) {
-    userMarker = 
-    <Marker position={[props.userChoice.userLocation.latitude, props.userChoice.userLocation.longitude]} icon={skater}>
-    <Popup>
-      vous êtes ici
-    </Popup>
-  </Marker>
+    map = 
+    <MapContainer center={[props.userChoice.userLocation.latitude, props.userChoice.userLocation.longitude]} zoom={12}>
+      <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+      <Marker position={[props.userChoice.userLocation.latitude, props.userChoice.userLocation.longitude]} icon={skater}>
+        <Popup>
+          <p style={{fontWeight: 'bold'}}>Vous êtes ici</p>
+        </Popup>
+      </Marker>
+      {shopsMarkers}
+    </MapContainer>
+  } else {
+    map = 
+    <MapContainer center={[46, 2]} zoom={5}>
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {shopsMarkers}
+    </MapContainer>
   }
 
   return (
@@ -146,14 +160,7 @@ function ListScreen(props) {
 
             <Col xs='12' md='6' >
               <div className='leaflet-container' style={{display: 'flex', margin: 20, borderRadius: 30}}>
-                <MapContainer center={[defaultLat, defaultLon]} zoom={12}>
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {userMarker}
-                {shopsMarkers}
-              </MapContainer>
+               {map}
             </div> 
           </Col>
          

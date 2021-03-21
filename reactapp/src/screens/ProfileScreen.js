@@ -145,22 +145,29 @@ function ProfileScreen(props) {
       
       return(
         <Card style={{width: '90%', padding: 10, marginBottom: 10}}>
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <h5 style={{fontWeight: 'bold'}}>{element.shop.shopName}</h5>
-            {element.appointment.chosenPayment === 'onshop' ?
-            <Badge  style={{height: '60%', backgroundColor: 'red'}}>{element.appointment.chosenPrice}€</Badge>
-            : 
-            <Badge style={{height: '60%', backgroundColor: 'green'}}>{element.appointment.chosenPrice}€</Badge>
-            }
+          <div>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <img src={element.shop.shopImages[0]} style={{width: '20%'}}></img>
+              <div style={{width: '70%'}}>
+                <h5 style={{fontWeight: 'bold'}}>{element.shop.shopName}</h5>
+                <p>{element.shop.shopAddress}</p>
+              </div>
+              {element.appointment.chosenPayment === 'onshop' ?
+              <Badge  style={{height: '60%', backgroundColor: '#AB4242'}}>{element.appointment.chosenPrice}€</Badge>
+              : 
+              <Badge style={{height: '60%', backgroundColor: '#51AB42'}}>{element.appointment.chosenPrice}€</Badge>
+              }
+            </div>
+            
           </div>
-          <p>{element.shop.shopAddress}</p>
-          <h5 style={{fontWeight: 'bold'}}>{element.appointment.chosenOffer}</h5>
+          
+          <h5 style={{fontWeight: 'bold', marginTop: 10}}>{element.appointment.chosenOffer}</h5>
           <h5>{date}</h5>
           { element.appointment.commentExists ?
           null
           :
-          <div>
-          <Button style={{backgroundColor: '#4280AB'}} onClick={() => openComment(element.shop._id, element.appointment._id) }>Ecrire un commentaire</Button>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+          <Button style={{backgroundColor: '#4280AB', fontWeight: 'bold'}} onClick={() => openComment(element.shop._id, element.appointment._id) }>Ecrire un commentaire</Button>
           </div>
           }
           
@@ -208,17 +215,22 @@ function ProfileScreen(props) {
       var date = weekday +' '+ new Date(element.appointment.startDate).getDate() +' '+ month +' à '+ hours+'h'+ minutes
 
       return(
-        <Card style={{width: '90%', padding: 10, marginBottom: 10}}>
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <h5 style={{fontWeight: 'bold'}}>{element.shop.shopName}</h5>
-            {element.appointment.chosenPayment === 'onshop' ?
-            <Badge  style={{height: '60%', backgroundColor: 'red'}}>{element.appointment.chosenPrice}€</Badge>
-            : 
-            <Badge style={{height: '60%', backgroundColor: 'green'}}>{element.appointment.chosenPrice}€</Badge>
-            }
+        <Card style={{width: '90%', padding: 10, marginBottom: 10} }>
+          <div>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <img src={element.shop.shopImages[0]} style={{width: '20%'}}></img>
+              <div style={{width: '70%'}}>
+                <h5 style={{fontWeight: 'bold'}}>{element.shop.shopName}</h5>
+                <p>{element.shop.shopAddress}</p>
+              </div>
+              {element.appointment.chosenPayment === 'onshop' ?
+              <Badge  style={{height: '60%', backgroundColor: '#AB4242'}}>{element.appointment.chosenPrice}€</Badge>
+              : 
+              <Badge style={{height: '60%', backgroundColor: '#51AB42'}}>{element.appointment.chosenPrice}€</Badge>
+              }
+            </div>
           </div>
-          <p>{element.shop.shopAddress}</p>
-          <h5 style={{fontWeight: 'bold'}}>{element.appointment.chosenOffer}</h5>
+          <h5 style={{fontWeight: 'bold', marginTop: 10}}>{element.appointment.chosenOffer}</h5>
           <h5>{date}</h5>
         </Card>
       )
@@ -228,20 +240,18 @@ function ProfileScreen(props) {
       <div className='globalStyle'>
         <Nav />
         <Container className='profilPage' >
-          <Col xs='12' style={{margin: 20}}>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Col xs='12' style={{marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <h1 style={{fontWeight: 'bold'}}>{props.user.firstName} {props.user.lastName}</h1>
               <Badge style={{backgroundColor: '#AB4242', fontWeight: 'bold', fontSize: 25, height: 40}}>{props.user.loyaltyPoints} points</Badge>
-            </div>
           </Col>
           <Col xs='12' md='6' style={{marginBottom: 20}}>
-            <Card style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Card style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#FFCD41'}}>
               <h3 style={{margin: 10, fontWeight: 'bold'}}>Vos rendez-vous à venir</h3>
               {futursAppointmentsTab}
             </Card>
           </Col >
           <Col xs='12' md='6'>
-            <Card style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Card style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#FFCD41'}}>
             <h3 style={{margin: 10, fontWeight: 'bold'}}>Vos rendez-vous passés</h3>
             {pastAppointmentsTab}
             </Card>
